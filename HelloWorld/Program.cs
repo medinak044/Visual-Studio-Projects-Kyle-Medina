@@ -1,35 +1,28 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
-string testStr = "This is a test";
-
-Console.WriteLine($"{testStr}."); // Template string
-
-int num1 = 2;
-int num2 = 3;
-int testInt = Multiply(num1, num2);
-
-int Multiply(int n1, int n2) { return n1 * n2; }
-
-Console.WriteLine($"The product of {num1} and {num2} is: {testInt}");
-
-
-// Cast from string to int
-StringToInt("6326445");
-void StringToInt(string str)
+﻿void Func_1()
 {
-    //int result = 0;
-    if (int.TryParse(str, out int result))
-    { Console.WriteLine($"Success: {result}"); }
-    else
-    { Console.WriteLine("Failure"); }
-}
+    // See https://aka.ms/new-console-template for more information
+    Console.WriteLine("Hello, World!");
+    string testStr = "This is a test";
 
-Func1();
-void Func1()
-{
-    int count = 0;
-    for (int i = 0; i < 10000000000; i++)
+    Console.WriteLine($"{testStr}."); // Template string
+
+    int num1 = 2;
+    int num2 = 3;
+    int testInt = Multiply(num1, num2);
+
+    int Multiply(int n1, int n2) { return n1 * n2; }
+
+    Console.WriteLine($"The product of {num1} and {num2} is: {testInt}");
+
+
+    // Cast from string to int
+    StringToInt("6326445");
+    void StringToInt(string str)
     {
-        count++;
+        //int result = 0;
+        if (int.TryParse(str, out int result))
+        { Console.WriteLine($"Success: {result}"); }
+        else
+        { Console.WriteLine("Failure"); }
     }
 }

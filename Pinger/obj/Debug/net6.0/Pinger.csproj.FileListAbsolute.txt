@@ -1,0 +1,15 @@
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\bin\Debug\net6.0\Pinger.exe
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\bin\Debug\net6.0\Pinger.deps.json
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\bin\Debug\net6.0\Pinger.runtimeconfig.json
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\bin\Debug\net6.0\Pinger.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\bin\Debug\net6.0\Pinger.pdb
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.csproj.AssemblyReference.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.AssemblyInfoInputs.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.AssemblyInfo.cs
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.csproj.CoreCompileInputs.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\refint\Pinger.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.pdb
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\Pinger.genruntimeconfig.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\Pinger\obj\Debug\net6.0\ref\Pinger.dll
