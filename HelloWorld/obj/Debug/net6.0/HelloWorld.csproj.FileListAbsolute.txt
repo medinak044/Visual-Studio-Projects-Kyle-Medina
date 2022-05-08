@@ -1,0 +1,15 @@
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\bin\Debug\net6.0\HelloWorld.exe
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\bin\Debug\net6.0\HelloWorld.deps.json
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\bin\Debug\net6.0\HelloWorld.runtimeconfig.json
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\bin\Debug\net6.0\HelloWorld.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\bin\Debug\net6.0\HelloWorld.pdb
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.csproj.AssemblyReference.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.AssemblyInfoInputs.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.AssemblyInfo.cs
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.csproj.CoreCompileInputs.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\refint\HelloWorld.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.pdb
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\HelloWorld.genruntimeconfig.cache
+E:\Documents\Visual Studio Projects - Kyle Medina\HelloWorld\obj\Debug\net6.0\ref\HelloWorld.dll

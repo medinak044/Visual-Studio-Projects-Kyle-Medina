@@ -1,2 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
+string testStr = "This is a test";
+
+Console.WriteLine($"{testStr}."); // Template string
+
+int num1 = 2;
+int num2 = 3;
+int testInt = Multiply(num1, num2);
+
+int Multiply(int n1, int n2) { return n1 * n2; }
+
+Console.WriteLine($"The product of {num1} and {num2} is: {testInt}");
+
