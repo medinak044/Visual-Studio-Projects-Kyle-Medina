@@ -12,3 +12,24 @@ int Multiply(int n1, int n2) { return n1 * n2; }
 
 Console.WriteLine($"The product of {num1} and {num2} is: {testInt}");
 
+
+// Cast from string to int
+StringToInt("6326445");
+void StringToInt(string str)
+{
+    //int result = 0;
+    if (int.TryParse(str, out int result))
+    { Console.WriteLine($"Success: {result}"); }
+    else
+    { Console.WriteLine("Failure"); }
+}
+
+Func1();
+void Func1()
+{
+    int count = 0;
+    for (int i = 0; i < 10000000000; i++)
+    {
+        count++;
+    }
+}
