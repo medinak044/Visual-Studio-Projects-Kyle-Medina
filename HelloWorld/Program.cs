@@ -1,4 +1,6 @@
-﻿void Func_1()
+﻿using HelloWorld;
+
+void Func_1()
 {
     // See https://aka.ms/new-console-template for more information
     Console.WriteLine("Hello, World!");
@@ -26,3 +28,16 @@
         { Console.WriteLine("Failure"); }
     }
 }
+
+void Func_2()
+{
+    List<Part> someList = new List<Part>();
+
+    someList.Add(new Part{ PartName = "Headlight", PartId = 1 });
+    someList.Add(new Part{ PartName = "Bumper", PartId = 2 });
+
+    for (int i = 0; i < someList.Count; i++)
+    { Console.WriteLine($"Partname: {someList[i].PartName}, PartId: {someList[i].PartId}"); }
+}
+
+Func_2();
