@@ -28,6 +28,19 @@ using System.Text;
 //}
 #endregion
 
-PingService pingService = new PingService();
-var response = pingService.SendPing();
-Console.WriteLine(response);
+void Func_Ping()
+{
+    PingService pingService = new PingService();
+    var response = pingService.SendPing();
+    Console.WriteLine(response);
+}
+
+void Func_Dog()
+{
+    Dog lucky = new Dog();
+    lucky.DogBarking();
+
+    //IDogWalker lucky2 = new Dog(); // Creates a new Dog
+}
+
+Func_Dog();
