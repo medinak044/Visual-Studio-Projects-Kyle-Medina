@@ -35,6 +35,7 @@ namespace API
             });
 
             services.AddControllers();
+            services.AddCors(); // Allows scripts from one origin point to interact with another from another origin point (localhost:5001 -> localhost:4422)
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
@@ -54,6 +55,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200")); // This method must be called in this exact order
 
             app.UseAuthorization();
 
