@@ -1,5 +1,6 @@
 ﻿using Data;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -15,12 +16,12 @@ namespace API.Controllers
         public UsersController(DataContext context)
         { _context = context; }
 
-        [HttpGet]
+        [HttpGet][AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers() // Gets multiple users
         { return await _context.Users.ToListAsync(); }
 
         // api/users/:id
-        [HttpGet("{id}")]
+        [Authorize][HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetUser(int id) // Gets one user
         { return await _context.Users.FindAsync(id); }
     }

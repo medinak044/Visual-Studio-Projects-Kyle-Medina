@@ -52,3 +52,10 @@ E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\runtimes\win-arm64\native\e_sqlite3.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\runtimes\win-x64\native\e_sqlite3.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\runtimes\win-x86\native\e_sqlite3.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
