@@ -1,0 +1,1 @@
+﻿-In the ExtendedUserEntity migration file, make sure to set the PublicId "nullable:" field to true (under "Photos")

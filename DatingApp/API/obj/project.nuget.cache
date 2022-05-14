@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "i61VdIwyysiqq+MmKs+pFUNJK0P5G+gNwZ7qf9O6bvt5QAUiDO2X/6Xpp5r6Omt3hP9+iqrMEElKfHVLgOx4ZA==",
+  "dgSpecHash": "rKhwLgm2cMmRDWgidVvRjK8fqEyYITLnKRV+R8JsozZEnZFpyv3e458fEYOh/x4hOGxFWnZyH1vAsL8R9/qjTw==",
   "success": true,
   "projectFilePath": "E:\\Documents\\Visual Studio Projects - Kyle Medina\\DatingApp\\API\\API.csproj",
   "expectedPackageFiles": [
@@ -32,6 +32,7 @@
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\6.10.0\\microsoft.identitymodel.protocols.openidconnect.6.10.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.identitymodel.tokens\\6.17.0\\microsoft.identitymodel.tokens.6.17.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\medin\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.0.6\\sqlitepclraw.bundle_e_sqlite3.2.0.6.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\sqlitepclraw.core\\2.0.6\\sqlitepclraw.core.2.0.6.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.0.6\\sqlitepclraw.lib.e_sqlite3.2.0.6.nupkg.sha512",

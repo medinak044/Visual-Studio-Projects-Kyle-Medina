@@ -59,3 +59,5 @@ E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Data\UserSeedData.json
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Newtonsoft.Json.dll
