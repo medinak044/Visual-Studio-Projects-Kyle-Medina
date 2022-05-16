@@ -9,6 +9,7 @@
       "API/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
+          "CloudinaryDotNet": "1.11.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.5",
           "Microsoft.EntityFrameworkCore.Design": "6.0.5",
           "Microsoft.EntityFrameworkCore.Sqlite": "6.0.5",
@@ -40,6 +41,17 @@
           "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
             "assemblyVersion": "11.0.0.0",
             "fileVersion": "11.0.0.0"
+          }
+        }
+      },
+      "CloudinaryDotNet/1.11.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.3/CloudinaryDotNet.dll": {
+            "assemblyVersion": "1.11.0.0",
+            "fileVersion": "1.11.0.0"
           }
         }
       },
@@ -494,6 +506,13 @@
       "sha512": "sha512-0asw5WxdCFh2OTi9Gv+oKyH9SzxwYQSnO8TV5Dd0GggovILzJW4UimP26JAcxc3yB5NnC5urooZ1BBs8ElpiBw==",
       "path": "automapper.extensions.microsoft.dependencyinjection/11.0.0",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512"
+    },
+    "CloudinaryDotNet/1.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pPz/CnKc1kkqjRtLiXDxVl/xjFKNBEKjhSy2266LL4/Y0NngXaJVjI4Lw7Yhh+yCiwM6Rwo40V1j1jzFgoyLsA==",
+      "path": "cloudinarydotnet/1.11.0",
+      "hashPath": "cloudinarydotnet.1.11.0.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",
