@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "O0wTpwJG3pbHXCoFrLgJb8BKNLPYxcwRVRQ6v/+0Wnw0gxrAU4d8ArsrLnxhoWt5E2uzuf/tNYQYUIgRmP5Xog==",
+  "dgSpecHash": "60X4veRloc+pVHt/6TFVXjS0/6Danat5IkFfy1vYPzUQlMGwnemHrPpjyHdWifMWUkNz1DF5o+sYtKVe9aUcXA==",
   "success": true,
   "projectFilePath": "E:\\Documents\\Visual Studio Projects - Kyle Medina\\DatingApp\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\medin\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\medin\\.nuget\\packages\\cloudinarydotnet\\1.11.0\\cloudinarydotnet.1.11.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.5\\microsoft.aspnetcore.authentication.jwtbearer.6.0.5.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
