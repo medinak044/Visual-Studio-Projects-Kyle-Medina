@@ -8,7 +8,7 @@ namespace HelloWorld
 {
     public class Part
     {
-        public string PartName { get; set; }
+        public string? PartName { get; set; }
         public int PartId { get; set; }
     }
 }
