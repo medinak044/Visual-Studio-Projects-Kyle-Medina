@@ -6,6 +6,7 @@ using Entities;
 
 namespace API.Helpers
 {
+    // An automapper maps an object's properties to another
     public class AutoMapperProfiles : Profile
     {
         public AutoMapperProfiles()

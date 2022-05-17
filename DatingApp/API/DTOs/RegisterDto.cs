@@ -12,5 +12,10 @@ namespace API.DTOs
         [Required] public string Country { get; set; }
         [Required] [StringLength(8, MinimumLength = 4)]
         public string Password { get; set; }
+
+        //-- Quick fix below for null values in sql --//
+        public string Interests { get; set; }
+        public string Introduction { get; set; }
+        public string LookingFor { get; set; }
     }
 }

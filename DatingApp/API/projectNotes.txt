@@ -1,1 +1,9 @@
-﻿-In the ExtendedUserEntity migration file, make sure to set the PublicId "nullable:" field to true (under "Photos")
+﻿In the ExtendedUserEntity migration file, make sure to set "nullable:" field to true:
+-Interests
+-Introduction
+-LookingFor
+-PublicId (under "Photos")
+
+After registering new users, manually insert values into NULL fields because
+somewhere, I made a code mistake where api won't accept retreiving null fields from database (sqlite)
+^- Made a quick fix on "register.component.ts" and "RegisterDto.cs" where registered user object will have " " values in the nullable fields (ex. interests, introduction, lookingFor)

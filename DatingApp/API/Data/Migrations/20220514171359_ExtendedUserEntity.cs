@@ -55,7 +55,7 @@ namespace API.Data.Migrations
                 name: "Introduction",
                 table: "Users",
                 type: "TEXT",
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
@@ -76,7 +76,7 @@ namespace API.Data.Migrations
                 name: "LookingFor",
                 table: "Users",
                 type: "TEXT",
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             migrationBuilder.CreateTable(
