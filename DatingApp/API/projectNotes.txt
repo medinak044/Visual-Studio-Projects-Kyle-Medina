@@ -7,3 +7,6 @@
 After registering new users, manually insert values into NULL fields because
 somewhere, I made a code mistake where api won't accept retreiving null fields from database (sqlite)
 ^- Made a quick fix on "register.component.ts" and "RegisterDto.cs" where registered user object will have " " values in the nullable fields (ex. interests, introduction, lookingFor)
+
+UserParams.cs:
+-Added values to Gender and CurrentUsername because for some reason, they keep showing up as null values on login
