@@ -64,3 +64,8 @@ E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\AutoMapper.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\CloudinaryDotNet.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\DatingApp\API\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
