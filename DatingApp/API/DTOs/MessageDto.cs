@@ -1,4 +1,5 @@
 ﻿using Entities;
+using System.Text.Json.Serialization;
 
 namespace API.DTOs
 {
@@ -14,5 +15,9 @@ namespace API.DTOs
         public string Content { get; set; }
         public DateTime? DateRead { get; set; } // Can be set to null if the message has not been read
         public DateTime MessageSent { get; set; }
+        [JsonIgnore]
+        public bool SenderDeleted { get; set; }
+        [JsonIgnore]
+        public bool RecipientDeleted { get; set; }
     }
 }
