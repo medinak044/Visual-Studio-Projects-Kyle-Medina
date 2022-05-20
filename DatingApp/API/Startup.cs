@@ -7,6 +7,7 @@ using API.Extensions;
 using API.Interfaces;
 using API.Middleware;
 using API.Services;
+using API.SignalR;
 using Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -40,6 +41,7 @@ namespace API
             services.AddControllers();
             services.AddCors(); // Allows scripts from one origin point to interact with another from another origin point (localhost:5001 -> localhost:4422)
             services.AddIdentityServices(_config); // Using an extension method
+            services.AddSignalR();
 
             services.AddSwaggerGen(c =>
             {
@@ -63,7 +65,10 @@ namespace API
 
             app.UseRouting();
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200")); // This method must be called in this exact order
+            app.UseCors(x => x.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials() // When using SignalR with access token
+            .WithOrigins("https://localhost:4200")); // This method must be called in this exact order
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -71,6 +76,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<PresenceHub>("hubs/presence");
             });
         }
     }
