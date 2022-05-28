@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "YwTDRHJkmjn0bWV+CAgEMJN2dPDr+U3K3INvIC7HEMIIXZdvoHK2qSB2TLPpoP8iSCXLckxZ+WZgGUcgu4URXg==",
+  "dgSpecHash": "H1qBqc4r5VKaV30j+GPZLq76r7qpFTA7brinmqbZuJT4MtpGLEs6vxNORWc+NVnq8Rur1eKhRiB19hj1J3nAWg==",
   "success": true,
   "projectFilePath": "E:\\Documents\\Visual Studio Projects - Kyle Medina\\PokemonReviewApp-2\\PokemonReviewApp-2.csproj",
   "expectedPackageFiles": [
@@ -14,6 +14,7 @@
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.entityframeworkcore.design\\6.0.5\\microsoft.entityframeworkcore.design.6.0.5.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\6.0.5\\microsoft.entityframeworkcore.relational.6.0.5.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\6.0.5\\microsoft.entityframeworkcore.sqlserver.6.0.5.nupkg.sha512",
+    "C:\\Users\\medin\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\6.0.5\\microsoft.entityframeworkcore.tools.6.0.5.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\6.0.0\\microsoft.extensions.caching.abstractions.6.0.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.extensions.caching.memory\\6.0.1\\microsoft.extensions.caching.memory.6.0.1.nupkg.sha512",
