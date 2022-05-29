@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "maPtUmqcRJU+Pwnwadk4D/J66ZikPxKWDsWYfVkpXK7ArMQbm8O81aqR86JbQ67Rc7egzNdErpUpJ1Bo6Shb8g==",
+  "dgSpecHash": "/EVx6NL26ygn1Ug8YnuNDLKS9BIA81kmuzFidKwTq+JzYSf1lDGCrH6ADz7Am2z6gHirImgFlAEl3SQBHtx9zQ==",
   "success": true,
   "projectFilePath": "E:\\Documents\\Visual Studio Projects - Kyle Medina\\PokemonReviewApp-2\\PokemonReviewApp-2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\medin\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
+    "C:\\Users\\medin\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\medin\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
