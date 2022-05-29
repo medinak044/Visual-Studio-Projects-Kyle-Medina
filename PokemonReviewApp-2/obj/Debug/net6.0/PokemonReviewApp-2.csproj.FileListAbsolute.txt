@@ -59,3 +59,4 @@ E:\Documents\Visual Studio Projects - Kyle Medina\PokemonReviewApp-2\obj\Debug\n
 E:\Documents\Visual Studio Projects - Kyle Medina\PokemonReviewApp-2\obj\Debug\net6.0\PokemonReviewApp-2.pdb
 E:\Documents\Visual Studio Projects - Kyle Medina\PokemonReviewApp-2\obj\Debug\net6.0\PokemonReviewApp-2.genruntimeconfig.cache
 E:\Documents\Visual Studio Projects - Kyle Medina\PokemonReviewApp-2\obj\Debug\net6.0\ref\PokemonReviewApp-2.dll
+E:\Documents\Visual Studio Projects - Kyle Medina\PokemonReviewApp-2\bin\Debug\net6.0\AutoMapper.dll
