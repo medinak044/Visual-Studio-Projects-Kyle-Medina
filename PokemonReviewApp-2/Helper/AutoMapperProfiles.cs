@@ -9,6 +9,8 @@ namespace PokemonReviewApp_2.Helper
         public AutoMapperProfiles()
         {
             CreateMap<Pokemon, PokemonDto>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<Country, CountryDto>();
         }
     }
 }
