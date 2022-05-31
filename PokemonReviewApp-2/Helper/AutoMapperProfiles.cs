@@ -10,7 +10,13 @@ namespace PokemonReviewApp_2.Helper
         {
             CreateMap<Pokemon, PokemonDto>();
             CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>(); // For the "CreateCategory" post request
             CreateMap<Country, CountryDto>();
+            CreateMap<CountryDto, Country>(); // For the "CreateCountry" post request
+            CreateMap<Owner, OwnerDto>();
+            CreateMap<OwnerDto, Owner>();  // For the "CreateOwner" post request
+            CreateMap<Review, ReviewDto>();
+            CreateMap<Reviewer, ReviewerDto>();
         }
     }
 }

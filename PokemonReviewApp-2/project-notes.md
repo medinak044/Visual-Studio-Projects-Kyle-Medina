@@ -24,4 +24,10 @@ Workflow to setting up routes/endpoints:
 - Create Repository, implement interface. The Repository file will hold db query logic.
 - Create Dto (based on the Model), keeping in mind what data will be sent back to the user.
 - Create Controller to handle API endpoint logic. Make sure to include Controller in AutoMapperProfiles,
-and add Controller to Program so the API knows to use the Controller's endpoints
+and add Controller to Program so the API knows to use the Repositories
+
+
+* "Repository" is where you put your database calls
+* Paste into your Program file to prevent Json cycling: (ref: https://youtu.be/FEanWuYq7us?list=PL82C6-O4XrHdiS10BLh23x71ve9mQCln0&t=2891)
+builder.Services.AddControllers().AddJsonOptions(x => 
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
