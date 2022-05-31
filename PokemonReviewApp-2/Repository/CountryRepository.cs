@@ -52,5 +52,11 @@ namespace PokemonReviewApp_2.Repository
             int saved = _context.SaveChanges(); // SQL query is generated to be sent to the database
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateCountry(Country country)
+        {
+            _context.Update(country);
+            return Save();
+        }
     }
 }

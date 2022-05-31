@@ -52,5 +52,11 @@ namespace PokemonReviewApp_2.Repository
             int saved = _context.SaveChanges(); // SQL query is generated to be sent to the database
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateOwner(Owner owner)
+        {
+            _context.Update(owner);
+            return Save();
+        }
     }
 }

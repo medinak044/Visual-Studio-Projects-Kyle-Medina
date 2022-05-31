@@ -45,5 +45,11 @@ namespace PokemonReviewApp_2.Repository
             var saved = _context.SaveChanges(); // SQL query is generated to be sent to the database
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateCategory(Category category)
+        {
+            _context.Update(category);
+            return Save();
+        }
     }
 }
