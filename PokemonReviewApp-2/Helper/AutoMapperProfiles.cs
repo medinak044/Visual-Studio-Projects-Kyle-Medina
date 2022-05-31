@@ -9,6 +9,7 @@ namespace PokemonReviewApp_2.Helper
         public AutoMapperProfiles()
         {
             CreateMap<Pokemon, PokemonDto>();
+            CreateMap<PokemonDto, Pokemon>(); //
             CreateMap<Category, CategoryDto>();
             CreateMap<CategoryDto, Category>(); // For the "CreateCategory" post request
             CreateMap<Country, CountryDto>();
@@ -16,7 +17,9 @@ namespace PokemonReviewApp_2.Helper
             CreateMap<Owner, OwnerDto>();
             CreateMap<OwnerDto, Owner>();  // For the "CreateOwner" post request
             CreateMap<Review, ReviewDto>();
+            CreateMap<ReviewDto, Review>(); //
             CreateMap<Reviewer, ReviewerDto>();
+            CreateMap<ReviewerDto, Reviewer>(); //
         }
     }
 }
