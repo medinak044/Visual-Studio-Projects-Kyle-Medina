@@ -1,7 +1,15 @@
+using BulkyBookWeb.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
+//builder.Services.AddRazorPages();
+//builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); // Not required because we already have hot reload
 
 var app = builder.Build();
 
