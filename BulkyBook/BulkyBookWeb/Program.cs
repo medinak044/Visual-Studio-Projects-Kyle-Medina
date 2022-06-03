@@ -9,7 +9,7 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 //builder.Services.AddRazorPages();
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); // Not required because we already have hot reload
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); // For loading changes to razor pages during runtime
 
 var app = builder.Build();
 
