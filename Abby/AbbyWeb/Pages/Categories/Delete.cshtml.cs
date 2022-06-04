@@ -6,32 +6,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace AbbyWeb.Pages.Categories
 {
     [BindProperties]
-    public class CreateModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         public Category Category { get; set; }
 
-        public CreateModel(ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public void OnGet()
+        public void OnGet(int id)
         {
+            Category = _context.Category.Find(id);
         }
 
         public async Task<IActionResult> OnPost()
         {
-            if (Category.Name == Category.DisplayOrder.ToString())
-            {
-                ModelState.AddModelError(Category.Name, "The DisplayOrder cannot exactly match the Name.");
-            }
+            var categoryFromDb = _context.Category.Find(Category.Id);
+            if (categoryFromDb == null) return Page();
 
-            if (!ModelState.IsValid) return Page();
-
-            await _context.Category.AddAsync(Category); // Prepares changes
+            _context.Category.Remove(categoryFromDb); // Prepares changes
             await _context.SaveChangesAsync(); // Saves changes to db
-            TempData["success"] = "Category created successfully";
+            TempData["success"] = "Category deleted successfully";
             return RedirectToPage("Index");
         }
     }

@@ -30,10 +30,12 @@ namespace AbbyWeb.Pages.Categories
 
             #region Duplicate Display Order validation
             //HashSet<int> displaytOrderIdSet = new HashSet<int>();
-            //// FLAW: The issue is we need some way to know what the original values
-            //// of the obj were before edits will be applied
+            //var categoryFromDb = _context.Category.Find(Category.Id);
             //var queryAll = _context.Category.ToList();
-            //foreach (var obj in queryAll) { displaytOrderIdSet.Add(obj.DisplayOrder); }
+            //foreach (var obj in queryAll) {
+            //    if (Category.DisplayOrder == categoryFromDb.DisplayOrder) continue;
+            //    displaytOrderIdSet.Add(obj.DisplayOrder); 
+            //}
 
             //if (displaytOrderIdSet.Contains(Category.DisplayOrder))
             //{
@@ -46,6 +48,7 @@ namespace AbbyWeb.Pages.Categories
 
             _context.Category.Update(Category); // Prepares changes
             await _context.SaveChangesAsync(); // Saves changes to db
+            TempData["success"] = "Category created successfully";
             return RedirectToPage("Index");
         }
     }
