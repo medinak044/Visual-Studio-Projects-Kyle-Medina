@@ -1,27 +1,38 @@
-﻿using BulkyBookWeb.Data;
-using BulkyBookWeb.Models;
+﻿using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Repository.Interfaces;
+using BulkyBook.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyBookWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(DataContext context)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = _context.Categories.ToList();
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
             return View(objCategoryList);
         }
 
         // GET
         public IActionResult Create()
         {
+            //// For convenience, prefill input with the next available display order value
+            //IEnumerable<Category> objCategoryList = _context.Categories.ToList();
+            //int nextNumber = 0; // Represents the highest display order value
+            //foreach (var obj in objCategoryList)
+            //{
+            //    if (obj.DisplayOrder > nextNumber)
+            //    { nextNumber = obj.DisplayOrder; }
+            //}
+
+
             return View();
         }
 
@@ -37,8 +48,8 @@ namespace BulkyBookWeb.Controllers
 
             if(!ModelState.IsValid) return View(); // Checks if data object has all the required values
 
-            _context.Categories.Add(obj); // Add
-            _context.SaveChanges(); // Pushes changes to the database
+            _unitOfWork.Category.Add(obj); // Add
+            _unitOfWork.Save(); // Pushes changes to the database
             TempData["success"] = "Category created successfully";
             return RedirectToAction("Index");
         }
@@ -48,8 +59,8 @@ namespace BulkyBookWeb.Controllers
         {
             if (id == null || id == 0) return NotFound();
 
-            var categoryFromDb = _context.Categories.Find(id);
-            //var categoryFromDb = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
+            //var categoryFromDb = _context.Categories.Find(id);
+            var categoryFromDb = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
 
             if (categoryFromDb == null) return NotFound();
 
@@ -68,8 +79,8 @@ namespace BulkyBookWeb.Controllers
 
             if (!ModelState.IsValid) return View(); // Checks if data object has all the required values
 
-            _context.Categories.Update(obj); // Update
-            _context.SaveChanges(); // Pushes changes to the database
+            _unitOfWork.Category.Update(obj); // Update
+            _unitOfWork.Save(); // Pushes changes to the database
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index");
         }
@@ -79,25 +90,25 @@ namespace BulkyBookWeb.Controllers
         {
             if (id == null || id == 0) return NotFound();
 
-            var categoryFromDb = _context.Categories.Find(id);
-            //var categoryFromDb = _context.Categories.Where(c => c.Id == id).FirstOrDefault();
+            //var categoryFromDb = _context.Categories.Find(id);
+            var categoryFromDb = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
 
             if (categoryFromDb == null) return NotFound();
 
             return View(categoryFromDb);
         }
 
-        // DELETE
+        // POST
         [HttpPost,ActionName("Delete")]
         [ValidateAntiForgeryToken] // Prevent unauthorized sources from using the site to create data
         public IActionResult DeletePOST(int? id)
         {
-            var obj = _context.Categories.Find(id);
+            var obj = _unitOfWork.Category.GetFirstOrDefault(c => c.Id == id);
 
             if (obj == null) return NotFound();
 
-            _context.Categories.Remove(obj); // Delete
-            _context.SaveChanges(); // Pushes changes to the database
+            _unitOfWork.Category.Remove(obj); // Delete
+            _unitOfWork.Save(); // Pushes changes to the database
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
         }

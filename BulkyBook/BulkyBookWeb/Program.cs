@@ -1,4 +1,6 @@
-using BulkyBookWeb.Data;
+using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Repository;
+using BulkyBook.DataAccess.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 //builder.Services.AddRazorPages();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); // For loading changes to razor pages during runtime
 
