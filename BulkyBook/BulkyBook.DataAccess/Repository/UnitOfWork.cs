@@ -18,7 +18,7 @@ namespace BulkyBook.DataAccess.Repository
         {
             _context = context;
             Category = new CategoryRepository(_context);
-            //CoverType = new CoverTypeRepository(_context);
+            CoverType = new CoverTypeRepository(_context);
         }
 
 
