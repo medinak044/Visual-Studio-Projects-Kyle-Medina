@@ -30,9 +30,6 @@ namespace Practice_WebAPI_01.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Credit")
                         .HasColumnType("int");
 
@@ -42,7 +39,7 @@ namespace Practice_WebAPI_01.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Heroes");
+                    b.ToTable("Heroes", (string)null);
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.Weapon", b =>
@@ -69,7 +66,7 @@ namespace Practice_WebAPI_01.Migrations
 
                     b.HasIndex("WeaponTypeId");
 
-                    b.ToTable("Weapons");
+                    b.ToTable("Weapons", (string)null);
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.WeaponType", b =>
@@ -80,12 +77,13 @@ namespace Practice_WebAPI_01.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("WeaponTypes");
+                    b.ToTable("WeaponTypes", (string)null);
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.Weapon", b =>

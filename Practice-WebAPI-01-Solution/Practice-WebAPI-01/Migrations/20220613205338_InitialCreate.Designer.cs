@@ -12,7 +12,7 @@ using Practice_WebAPI_01.Data;
 namespace Practice_WebAPI_01.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220609214202_InitialCreate")]
+    [Migration("20220613205338_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,6 @@ namespace Practice_WebAPI_01.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Credit")
                         .HasColumnType("int");
@@ -82,8 +79,9 @@ namespace Practice_WebAPI_01.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

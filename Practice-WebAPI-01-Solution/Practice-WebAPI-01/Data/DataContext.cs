@@ -8,7 +8,7 @@ namespace Practice_WebAPI_01.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         // Tables
-        public DbSet <HeroUser> Heroes { get; set; }
+        public DbSet <Hero> Heroes { get; set; }
         public DbSet <Weapon> Weapons { get; set; }
         public DbSet <WeaponType> WeaponTypes { get; set; }
     }
