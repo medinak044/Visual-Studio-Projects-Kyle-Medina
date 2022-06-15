@@ -3,6 +3,7 @@ using Practice_WebAPI_01;
 using Practice_WebAPI_01.Data;
 using Practice_WebAPI_01.Interfaces;
 using Practice_WebAPI_01.Repository;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 //builder.Services.AddTransient<Seed>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // ref: https://youtu.be/K4WuxwkXrIY?list=PL82C6-O4XrHdiS10BLh23x71ve9mQCln0&t=1660
 builder.Services.AddScoped<IHeroRepository, HeroRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
