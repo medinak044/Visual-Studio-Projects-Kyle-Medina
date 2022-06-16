@@ -33,5 +33,17 @@ namespace Practice_WebAPI_01.Repository
 
             return false;
         }
+
+        public async Task<bool> RegisterHero(Hero hero)
+        {
+            await _context.AddAsync(hero);
+            return await Save();
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

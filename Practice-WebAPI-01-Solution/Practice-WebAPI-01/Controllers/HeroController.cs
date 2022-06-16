@@ -20,7 +20,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         _heroRepository = heroRepository;
     }
 
-    [HttpGet("{heroId}")]
+    [HttpGet("{heroId}", Name = "get-hero")]
     public async Task<ActionResult<Hero>> GetHero(int heroId)
     {
         var hero = await _heroRepository.GetHero(heroId);
@@ -35,7 +35,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     }
 
 
-    [HttpGet]
+    [HttpGet("get-heroes")]
     public async Task<ActionResult<ICollection<Hero>>> GetHeroes()
     {
         var heroes = await _heroRepository.GetHeroes();
@@ -46,7 +46,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         return Ok(heroes);
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<ActionResult> RegisterHero(HeroDto heroDto)
     {
         // Check if dto arrives with data
@@ -58,9 +58,15 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
-        var hero = _mapper.Map<Hero>(heroDto);
+        Hero hero = _mapper.Map<Hero>(heroDto);
 
         // Save data to db + Check if automapping was successful
+        var result = await _heroRepository.RegisterHero(hero); // "await" executes async method then outputs a bool instead of Task<bool>
+        if (!result)
+        {
+            ModelState.AddModelError("", "Something went wrong while saving");
+            return StatusCode(500, ModelState);
+        }
 
         // End method by indicating hero creation was successful
         return Ok("Successfully created");
