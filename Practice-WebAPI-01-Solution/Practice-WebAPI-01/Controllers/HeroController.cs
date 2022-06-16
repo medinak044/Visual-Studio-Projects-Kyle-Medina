@@ -72,5 +72,31 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         return Ok("Successfully created");
     }
 
+    [HttpDelete("delete-hero")]
+    public async Task<ActionResult> DeleteHero(int heroId)
+    {
+        var heroToDelete = await _heroRepository.GetHero(heroId);
+        //var itemToDelete = await _itemRepository.GetItem(heroId); // Get specific item of the Hero that own's it
 
+        if (heroToDelete == null)
+            return NotFound();
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        // Must delete Items associated with the Hero
+        //if (!await _heroRepository.DeleteItems(itemToDelete))
+        //{
+        //    ModelState.AddModelError("", "Something went wrong while deleting");
+        //}
+
+
+        // Attempt to delete hero
+        if (!await _heroRepository.DeleteHero(heroToDelete))
+        {
+            ModelState.AddModelError("", "Something went wrong while deleting");
+        }
+
+        return NoContent();
+    }
 }

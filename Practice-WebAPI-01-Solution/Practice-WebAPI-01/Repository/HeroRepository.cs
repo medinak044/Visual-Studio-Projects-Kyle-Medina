@@ -40,9 +40,15 @@ namespace Practice_WebAPI_01.Repository
             return await Save();
         }
 
+        public async Task<bool> DeleteHero (Hero hero)
+        {
+            _context.Remove(hero);
+            return await Save();
+        }
+
         public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
     }

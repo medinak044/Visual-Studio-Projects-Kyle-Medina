@@ -9,5 +9,6 @@ namespace Practice_WebAPI_01.Interfaces
         Task<bool> HeroExists(string heroName);
         Task<bool> RegisterHero(Hero hero);
         Task<bool> Save();
+        Task<bool> DeleteHero(Hero hero);
     }
 }
