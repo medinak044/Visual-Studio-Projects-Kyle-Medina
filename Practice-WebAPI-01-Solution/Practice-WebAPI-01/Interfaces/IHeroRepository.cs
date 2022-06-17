@@ -8,7 +8,7 @@ namespace Practice_WebAPI_01.Interfaces
         Task <ICollection<Hero>> GetHeroes();
         Task<bool> HeroExists(string heroName);
         Task<bool> RegisterHero(Hero hero);
-        Task<bool> Save();
         Task<bool> DeleteHero(Hero hero);
+        Task<bool> Save();
     }
 }

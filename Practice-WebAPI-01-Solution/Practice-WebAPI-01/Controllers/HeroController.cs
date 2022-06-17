@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Practice_WebAPI_01.Data;
 using Practice_WebAPI_01.Models;
 using Practice_WebAPI_01.Interfaces;
 using AutoMapper;
