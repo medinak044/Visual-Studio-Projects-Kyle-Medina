@@ -8,5 +8,7 @@ public class Weapon
     [Required]
     [MaxLength(100)]
     public string Name { get; set; }
+    [Required]
     public WeaponType WeaponType { get; set; }
+    //public int HeroUserId { get; set; }
 }

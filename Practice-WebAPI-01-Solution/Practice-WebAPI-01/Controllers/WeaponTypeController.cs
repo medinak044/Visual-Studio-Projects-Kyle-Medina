@@ -35,7 +35,7 @@ public class WeaponTypeController: ControllerBase
 
 
     [HttpGet("get-weaponTypes")]
-    public async Task<ActionResult<ICollection<WeaponType>>> GetWeaponType()
+    public async Task<ActionResult<ICollection<WeaponType>>> GetWeaponTypes()
     {
         var weaponTypes = await _weaponTypeRepository.GetWeaponTypes();
 
