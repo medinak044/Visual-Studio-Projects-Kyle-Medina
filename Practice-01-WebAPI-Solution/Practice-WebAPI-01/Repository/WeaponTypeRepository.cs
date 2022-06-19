@@ -14,16 +14,17 @@ public class WeaponTypeRepository: IWeaponTypeRepository
         _context = context;
     }
 
-    public async Task<WeaponType> GetWeaponType(int weaponTypeId)
+    public async Task<WeaponType> GetFirstOrDefault(int weaponTypeId)
     {
         return await _context.WeaponTypes.FirstOrDefaultAsync(w => w.Id == weaponTypeId);
     }
 
-    public async Task<ICollection<WeaponType>> GetWeaponTypes()
+    //NOTE: GetAll() could be expanded to set a limit for the amount of records being retrieved.(ex. 1000 returns top 1000, -1 returns everything)
+    public async Task<ICollection<WeaponType>> GetAll()
     {
         return await _context.WeaponTypes.ToListAsync();
     }
-    public async Task<bool> WeaponTypeExists(string weaponTypeName)
+    public async Task<bool> Exists(string weaponTypeName)
     {
         var x = await _context.WeaponTypes.Where(w => w.Type.Trim().ToUpper() == weaponTypeName.Trim().ToUpper()).FirstOrDefaultAsync();
 
@@ -33,21 +34,20 @@ public class WeaponTypeRepository: IWeaponTypeRepository
         return false;
     }
 
-    public async Task<bool> RegisterWeaponType(WeaponType weaponType)
+    public void Add(WeaponType weaponType)
     {
-        await _context.AddAsync(weaponType);
-        return await Save();
+        _context.Add(weaponType);
+        //return await Save();
     }
-    public async Task<bool> DeleteWeaponType(WeaponType weaponType)
+    public void Remove(WeaponType weaponType)
     {
         _context.Remove(weaponType);
-        return await Save();
+        //return await Save();
     }
 
-    public async Task<bool> Save()
-    {
-        var saved = await _context.SaveChangesAsync();
-        return saved > 0 ? true : false;
-    }
-
+    //public async Task<bool> Save()
+    //{
+    //    var saved = await _context.SaveChangesAsync();
+    //    return saved > 0 ? true : false;
+    //}
 }

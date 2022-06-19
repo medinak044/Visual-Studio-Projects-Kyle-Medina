@@ -13,8 +13,7 @@ public class WeaponTypeController: ControllerBase
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
 
-    public WeaponTypeController(IMapper mapper,
-        IUnitOfWork unitOfWork)
+    public WeaponTypeController(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
@@ -23,7 +22,7 @@ public class WeaponTypeController: ControllerBase
     [HttpGet("{weaponTypeId}")]
     public async Task<ActionResult<WeaponType>> GetWeaponType(int weaponTypeId)
     {
-        var weaponType = await _unitOfWork.WeaponType.GetWeaponType(weaponTypeId);
+        var weaponType = await _unitOfWork.WeaponType.GetFirstOrDefault(weaponTypeId);
 
         if (weaponType == null)
             return NotFound();
@@ -38,7 +37,7 @@ public class WeaponTypeController: ControllerBase
     [HttpGet("get-weaponTypes")]
     public async Task<ActionResult<ICollection<WeaponType>>> GetWeaponTypes()
     {
-        var weaponTypes = await _unitOfWork.WeaponType.GetWeaponTypes();
+        var weaponTypes = await _unitOfWork.WeaponType.GetAll();
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -52,15 +51,14 @@ public class WeaponTypeController: ControllerBase
         if (weaponType == null)
             return BadRequest(ModelState);
 
-        if (await _unitOfWork.WeaponType.WeaponTypeExists(weaponType.Type))
+        if (await _unitOfWork.WeaponType.Exists(weaponType.Type))
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
         //WeaponType hero = _mapper.Map<WeaponType>(weaponType);
 
-        // Save data to db + Check if automapping was successful
-        var result = await _unitOfWork.WeaponType.RegisterWeaponType(weaponType); // "await" executes async method then outputs a bool instead of Task<bool>
-        if (!result)
+        _unitOfWork.WeaponType.Add(weaponType); // Get data ready to be saved
+        if (!await _unitOfWork.Save()) // Attempt to save, then check if save was successful
         {
             ModelState.AddModelError("", "Something went wrong while saving");
             return StatusCode(500, ModelState);
@@ -72,7 +70,7 @@ public class WeaponTypeController: ControllerBase
     [HttpDelete("delete-weaponType")]
     public async Task<ActionResult> DeleteWeaponType(int weaponType)
     {
-        var weaponTypeToDelete = await _unitOfWork.WeaponType.GetWeaponType(weaponType);
+        var weaponTypeToDelete = await _unitOfWork.WeaponType.GetFirstOrDefault(weaponType);
 
         if (weaponTypeToDelete == null)
             return NotFound();
@@ -80,7 +78,8 @@ public class WeaponTypeController: ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (!await _unitOfWork.WeaponType.DeleteWeaponType(weaponTypeToDelete))
+        _unitOfWork.WeaponType.Remove(weaponTypeToDelete);
+        if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while deleting");
         }

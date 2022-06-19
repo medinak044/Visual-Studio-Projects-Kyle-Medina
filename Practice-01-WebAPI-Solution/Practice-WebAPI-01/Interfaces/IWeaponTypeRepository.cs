@@ -4,11 +4,11 @@ namespace Practice_WebAPI_01.Interfaces;
 
 public interface IWeaponTypeRepository
 {
-    Task<WeaponType> GetWeaponType(int weaponTypeId);
-    Task<ICollection<WeaponType>> GetWeaponTypes();
-    Task<bool> WeaponTypeExists(string weaponTypeName);
-    Task<bool> RegisterWeaponType(WeaponType weaponType);
-    Task<bool> DeleteWeaponType(WeaponType weaponType);
-    Task<bool> Save();
+    Task<WeaponType> GetFirstOrDefault(int weaponTypeId);
+    Task<ICollection<WeaponType>> GetAll();
+    Task<bool> Exists(string weaponTypeName);
+    void Add(WeaponType weaponType);
+    void Remove(WeaponType weaponType);
+    //Task<bool> Save();
 
 }
