@@ -11,18 +11,19 @@ namespace Practice_WebAPI_01.Controllers;
 public class WeaponTypeController: ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IWeaponTypeRepository _weaponTypeRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public WeaponTypeController(IMapper mapper, IWeaponTypeRepository weaponTypeRepository)
+    public WeaponTypeController(IMapper mapper,
+        IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
-        _weaponTypeRepository = weaponTypeRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{weaponTypeId}")]
     public async Task<ActionResult<WeaponType>> GetWeaponType(int weaponTypeId)
     {
-        var weaponType = await _weaponTypeRepository.GetWeaponType(weaponTypeId);
+        var weaponType = await _unitOfWork.WeaponType.GetWeaponType(weaponTypeId);
 
         if (weaponType == null)
             return NotFound();
@@ -37,7 +38,7 @@ public class WeaponTypeController: ControllerBase
     [HttpGet("get-weaponTypes")]
     public async Task<ActionResult<ICollection<WeaponType>>> GetWeaponTypes()
     {
-        var weaponTypes = await _weaponTypeRepository.GetWeaponTypes();
+        var weaponTypes = await _unitOfWork.WeaponType.GetWeaponTypes();
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -51,14 +52,14 @@ public class WeaponTypeController: ControllerBase
         if (weaponType == null)
             return BadRequest(ModelState);
 
-        if (await _weaponTypeRepository.WeaponTypeExists(weaponType.Type))
+        if (await _unitOfWork.WeaponType.WeaponTypeExists(weaponType.Type))
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
         //WeaponType hero = _mapper.Map<WeaponType>(weaponType);
 
         // Save data to db + Check if automapping was successful
-        var result = await _weaponTypeRepository.RegisterWeaponType(weaponType); // "await" executes async method then outputs a bool instead of Task<bool>
+        var result = await _unitOfWork.WeaponType.RegisterWeaponType(weaponType); // "await" executes async method then outputs a bool instead of Task<bool>
         if (!result)
         {
             ModelState.AddModelError("", "Something went wrong while saving");
@@ -71,7 +72,7 @@ public class WeaponTypeController: ControllerBase
     [HttpDelete("delete-weaponType")]
     public async Task<ActionResult> DeleteWeaponType(int weaponType)
     {
-        var weaponTypeToDelete = await _weaponTypeRepository.GetWeaponType(weaponType);
+        var weaponTypeToDelete = await _unitOfWork.WeaponType.GetWeaponType(weaponType);
 
         if (weaponTypeToDelete == null)
             return NotFound();
@@ -79,7 +80,7 @@ public class WeaponTypeController: ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (!await _weaponTypeRepository.DeleteWeaponType(weaponTypeToDelete))
+        if (!await _unitOfWork.WeaponType.DeleteWeaponType(weaponTypeToDelete))
         {
             ModelState.AddModelError("", "Something went wrong while deleting");
         }
