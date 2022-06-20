@@ -31,6 +31,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return await dbSet.ToListAsync();
     }
+
     public virtual async Task<T> GetById(int id)
     {
         return await dbSet.FindAsync(id);

@@ -10,17 +10,17 @@ namespace Practice_WebAPI_01.Controllers;
 [ApiController]
 public class WeaponController : ControllerBase
 {
-    private readonly IWeaponRepository _weaponRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public WeaponController(IWeaponRepository weaponRepository)
+    public WeaponController(IUnitOfWork unitOfWork)
     {
-        _weaponRepository = weaponRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{weaponId}")]
     public async Task<ActionResult<WeaponType>> GetWeapon(int weaponId)
     {
-        var weapon = await _weaponRepository.GetWeapon(weaponId);
+        var weapon = await _unitOfWork.Weapons.GetById(weaponId);
 
         if (weapon == null)
             return NotFound();
@@ -35,7 +35,7 @@ public class WeaponController : ControllerBase
     [HttpGet("get-weapons")]
     public async Task<ActionResult<ICollection<WeaponType>>> GetWeapons()
     {
-        var weapon = await _weaponRepository.GetWeapons();
+        var weapon = await _unitOfWork.Weapons.GetAll();
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -49,15 +49,16 @@ public class WeaponController : ControllerBase
         if (weapon == null)
             return BadRequest(ModelState);
 
-        if (await _weaponRepository.WeaponExists(weapon.Name))
+        if (await _unitOfWork.Weapons.Exists(w => 
+        w.Name.Trim().ToUpper() == weapon.Name.Trim().ToUpper()))
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
         //WeaponType hero = _mapper.Map<WeaponType>(weaponType);
 
         // Save data to db + Check if automapping was successful
-        var result = await _weaponRepository.RegisterWeapon(weapon); // "await" executes async method then outputs a bool instead of Task<bool>
-        if (!result)
+        await _unitOfWork.Weapons.Add(weapon);
+        if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while saving");
             return StatusCode(500, ModelState);
@@ -67,9 +68,9 @@ public class WeaponController : ControllerBase
     }
 
     [HttpDelete("delete-weapon")]
-    public async Task<ActionResult> DeleteWeapon(int weapon)
+    public async Task<ActionResult> DeleteWeapon(int weaponId)
     {
-        var weaponToDelete = await _weaponRepository.GetWeapon(weapon);
+        var weaponToDelete = await _unitOfWork.Weapons.GetById(weaponId);
 
         if (weaponToDelete == null)
             return NotFound();
@@ -77,7 +78,8 @@ public class WeaponController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (!await _weaponRepository.DeleteWeapon(weaponToDelete))
+        await _unitOfWork.Weapons.Remove(weaponToDelete);
+        if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while deleting");
         }

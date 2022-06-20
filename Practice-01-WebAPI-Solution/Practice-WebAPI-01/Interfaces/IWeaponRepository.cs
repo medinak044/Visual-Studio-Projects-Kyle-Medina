@@ -2,13 +2,13 @@
 
 namespace Practice_WebAPI_01.Interfaces;
 
-public interface IWeaponRepository
+public interface IWeaponRepository: IRepository<Weapon>
 {
-    Task<Weapon> GetWeapon(int weaponId);
-    Task<ICollection<Weapon>> GetWeapons();
-    Task<bool> WeaponExists(string weaponName);
-    Task<bool> RegisterWeapon(Weapon weapon);
-    Task<bool> DeleteWeapon(Weapon weapon);
-    Task<bool> Save();
+    //Task<Weapon> GetWeapon(int weaponId);
+    //Task<ICollection<Weapon>> GetWeapons();
+    //Task<bool> WeaponExists(string weaponName);
+    //Task<bool> RegisterWeapon(Weapon weapon);
+    //Task<bool> DeleteWeapon(Weapon weapon);
+    //Task<bool> Save();
 
 }
