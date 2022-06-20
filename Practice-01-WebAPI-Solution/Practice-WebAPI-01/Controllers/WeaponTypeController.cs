@@ -70,7 +70,7 @@ public class WeaponTypeController : ControllerBase
         return Ok("Successfully created");
     }
 
-    [HttpPut]
+    [HttpPut("update-weaponType")]
     public async Task<ActionResult> UpdateWeaponType(int weaponTypeId, WeaponType updatedWeaponType)
     {
         #region Validations

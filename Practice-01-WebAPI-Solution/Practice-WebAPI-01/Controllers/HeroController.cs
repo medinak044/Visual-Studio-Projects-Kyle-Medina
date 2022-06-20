@@ -11,18 +11,18 @@ namespace Practice_WebAPI_01.Controllers;
 public class HeroController : ControllerBase // Inherit from ControllerBase instead of Controller because Controller just adds support for views (MVC); not applicable to webAPI
 {
     private readonly IMapper _mapper;
-    private readonly IHeroRepository _heroRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public HeroController(IMapper mapper, IHeroRepository heroRepository)
+    public HeroController(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
-        _heroRepository = heroRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{heroId}", Name = "get-hero")]
     public async Task<ActionResult<Hero>> GetHero(int heroId)
     {
-        var hero = await _heroRepository.GetHero(heroId);
+        var hero = await _unitOfWork.Heroes.GetById(heroId);
 
         if (hero == null)
             return NotFound();
@@ -35,9 +35,9 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
 
 
     [HttpGet("get-heroes")]
-    public async Task<ActionResult<ICollection<Hero>>> GetHeroes()
+    public async Task<ActionResult<IEnumerable<Hero>>> GetHeroes()
     {
-        var heroes = await _heroRepository.GetHeroes();
+        var heroes = await _unitOfWork.Heroes.GetAll();
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -53,15 +53,16 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
             return BadRequest(ModelState);
 
         // Search the db if the new Hero's name already exists
-        if (await _heroRepository.HeroExists(heroDto.UserName))
+        if (await _unitOfWork.Heroes.Exists(h => 
+        h.UserName.Trim().ToUpper() == heroDto.UserName.Trim().ToUpper()))
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
         Hero hero = _mapper.Map<Hero>(heroDto);
 
         // Save data to db + Check if automapping was successful
-        var result = await _heroRepository.RegisterHero(hero); // "await" executes async method then outputs a bool instead of Task<bool>
-        if (!result)
+        await _unitOfWork.Heroes.Add(hero); // "await" executes async method then outputs a bool instead of Task<bool>
+        if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while saving");
             return StatusCode(500, ModelState);
@@ -74,7 +75,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     [HttpDelete("delete-hero")]
     public async Task<ActionResult> DeleteHero(int heroId)
     {
-        var heroToDelete = await _heroRepository.GetHero(heroId);
+        var heroToDelete = await _unitOfWork.Heroes.GetById(heroId);
         //var itemToDelete = await _itemRepository.GetItem(heroId); // Get specific item of the Hero that own's it
 
         if (heroToDelete == null)
@@ -91,7 +92,8 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
 
 
         // Attempt to delete hero
-        if (!await _heroRepository.DeleteHero(heroToDelete))
+        await _unitOfWork.Heroes.Remove(heroToDelete);
+        if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while deleting");
         }

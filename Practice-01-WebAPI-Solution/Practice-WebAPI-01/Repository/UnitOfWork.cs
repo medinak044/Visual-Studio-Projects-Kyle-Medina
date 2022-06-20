@@ -7,14 +7,14 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly DataContext _context;
 
-    //public IHeroRepository Hero { get; private set; }
-    //public IWeaponRepository Weapon { get; private set; }
+    public IHeroRepository Heroes { get; private set; }
+    //public IWeaponRepository Weapons { get; private set; }
     public IWeaponTypeRepository WeaponTypes { get; private set; }
 
     public UnitOfWork(DataContext context)
     {
         _context = context;
-        //Heroes = new HeroRepository(_context);
+        Heroes = new HeroRepository(_context);
         //Weapons = new WeaponRepository(_context);
         WeaponTypes = new WeaponTypeRepository(_context);
 

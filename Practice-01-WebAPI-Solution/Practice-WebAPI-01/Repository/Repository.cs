@@ -54,16 +54,16 @@ public class Repository<T> : IRepository<T> where T : class
         return true; // Remember to call Save() after this
     }
 
-    // Might have to code a custom Upsert method for each repository
-    public virtual async Task<bool> Upsert(T entity, Expression<Func<T, bool>> predicate)
-    {
-        var existingEntity = await dbSet.Where(predicate).FirstOrDefaultAsync();
+    //// Might have to code a custom Upsert method for each repository
+    //public virtual async Task<bool> Upsert(T entity, Expression<Func<T, bool>> predicate)
+    //{
+    //    var existingEntity = await dbSet.Where(predicate).FirstOrDefaultAsync();
 
-        if (existingEntity == null)
-            return await Add(entity);
+    //    if (existingEntity == null)
+    //        return await Add(entity);
 
-        // Somehow map entity's values to existingEntity's fields
+    //    // Somehow map entity's values to existingEntity's fields
 
-        return true;
-    }
+    //    return true;
+    //}
 }
