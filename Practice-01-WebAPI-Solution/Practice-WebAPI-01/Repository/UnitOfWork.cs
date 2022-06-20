@@ -26,4 +26,9 @@ public class UnitOfWork : IUnitOfWork
         var saved = await _context.SaveChangesAsync();
         return saved > 0 ? true : false;
     }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
 }
