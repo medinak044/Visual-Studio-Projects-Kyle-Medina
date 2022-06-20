@@ -2,10 +2,10 @@
 
 namespace Practice_WebAPI_01.Interfaces;
 
-public interface IUnitOfWork: IDisposable // "IAsyncDisposable" is available as well
+public interface IUnitOfWork // "IAsyncDisposable" is available as well
 {
     //IHeroRepository Hero { get; }
     //IWeaponRepository Weapon { get; }
-    IWeaponTypeRepository WeaponType { get; }
+    IWeaponTypeRepository WeaponTypes { get; }
     Task<bool> Save();
 }

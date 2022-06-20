@@ -23,7 +23,7 @@ public class WeaponTypeController : ControllerBase
     public async Task<ActionResult<WeaponType>> GetWeaponType(int weaponTypeId)
     {
         //var weaponType = await _unitOfWork.WeaponType.GetFirstOrDefault(w => w.Id == weaponTypeId);
-        var weaponType = await _unitOfWork.WeaponType.GetById(weaponTypeId);
+        var weaponType = await _unitOfWork.WeaponTypes.GetById(weaponTypeId);
 
         if (weaponType == null)
             return NotFound();
@@ -38,7 +38,7 @@ public class WeaponTypeController : ControllerBase
     [HttpGet("get-weaponTypes")]
     public async Task<ActionResult<IEnumerable<WeaponType>>> GetWeaponTypes()
     {
-        var weaponTypes = await _unitOfWork.WeaponType.GetAll();
+        var weaponTypes = await _unitOfWork.WeaponTypes.GetAll();
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -52,15 +52,15 @@ public class WeaponTypeController : ControllerBase
         if (weaponType == null)
             return BadRequest(ModelState);
 
-        if (await _unitOfWork.WeaponType.Exists(w =>
-            w.Type.Trim().ToUpper()
-            == weaponType.Type.Trim().ToUpper()))
+        // Check if the Type already exists
+        if (await _unitOfWork.WeaponTypes.Exists(w =>
+            w.Type.Trim().ToUpper() == weaponType.Type.Trim().ToUpper()))
             return BadRequest("Username is taken");
 
         // Map DTO values to Model
         //WeaponType hero = _mapper.Map<WeaponType>(weaponType);
 
-        await _unitOfWork.WeaponType.Add(weaponType); // Get data ready to be saved
+        await _unitOfWork.WeaponTypes.Add(weaponType); // Get data ready to be saved
         if (!await _unitOfWork.Save()) // Attempt to save, then check if save was successful
         {
             ModelState.AddModelError("", "Something went wrong while saving");
@@ -70,11 +70,44 @@ public class WeaponTypeController : ControllerBase
         return Ok("Successfully created");
     }
 
+    [HttpPut]
+    public async Task<ActionResult> UpdateWeaponType(int weaponTypeId, WeaponType updatedWeaponType)
+    {
+        #region Validations
+        if (updatedWeaponType == null)
+            return BadRequest(ModelState);
+
+        // Check if ids match
+        if (weaponTypeId != updatedWeaponType.Id)
+            return BadRequest(ModelState);
+
+        // Check if weaponType to be updated actually exists
+        if (!await _unitOfWork.WeaponTypes.Exists(w => w.Id == weaponTypeId))
+            return NotFound();
+
+        if (!ModelState.IsValid)
+            return BadRequest();
+        #endregion
+
+        //var weaponTypeMap = _mapper.Map<WeaponType>(updatedWeaponType); // This just maps to another model (DTO -> Model)
+
+        await _unitOfWork.WeaponTypes.Update(updatedWeaponType);
+        if (!await _unitOfWork.Save())
+        {
+            ModelState.AddModelError("", "Something went wrong while updating");
+            return StatusCode(500, ModelState);
+        }
+
+        //await _unitOfWork.WeaponTypes.UpdateWeaponType(updatedWeaponType);
+
+        return NoContent();
+    }
+
     [HttpDelete("delete-weaponType")]
     public async Task<ActionResult> DeleteWeaponType(int weaponTypeId)
     {
         //var weaponTypeToDelete = await _unitOfWork.WeaponType.GetFirstOrDefault(w => w.Id == weaponTypeId);
-        var weaponTypeToDelete = await _unitOfWork.WeaponType.GetById(weaponTypeId);
+        var weaponTypeToDelete = await _unitOfWork.WeaponTypes.GetById(weaponTypeId);
 
         if (weaponTypeToDelete == null)
             return NotFound();
@@ -82,7 +115,7 @@ public class WeaponTypeController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        await _unitOfWork.WeaponType.Remove(weaponTypeToDelete);
+        await _unitOfWork.WeaponTypes.Remove(weaponTypeToDelete);
         if (!await _unitOfWork.Save())
         {
             ModelState.AddModelError("", "Something went wrong while deleting");

@@ -2,6 +2,7 @@
 using Practice_WebAPI_01.Data;
 using Practice_WebAPI_01.Models;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Practice_WebAPI_01.Repository;
 
@@ -12,6 +13,28 @@ public class WeaponTypeRepository: Repository<WeaponType>, IWeaponTypeRepository
     public WeaponTypeRepository(DataContext context) : base(context)
     {
         _context = context;
+    }
+
+    // See video below to create override functions from Repository in case of logging, for example
+    // https://www.youtube.com/watch?v=-jcf1Qq8A-4
+
+    // Refactor as a generic function in Repository?
+    //^ No, because we also need to account for the model's navigation properties as well
+    public async Task<bool> UpdateWeaponType(WeaponType obj)
+    {
+        var objFromDb = await _context.WeaponTypes.FirstOrDefaultAsync(w => w.Id == obj.Id);
+
+        if (objFromDb == null)
+            return false;
+
+        //#region Map values from obj if they are new
+        //objFromDb.Id = obj.Id;
+        //objFromDb.Type = obj.Type;
+        //#endregion
+
+        //var weaponTypeMap = _mapper.Map<WeaponType>(objFromDb);
+
+        return true; // Remember to call a Save() method afterwards to commit these changes to db
     }
 
     //public async Task<WeaponType> GetFirstOrDefault(int weaponTypeId)

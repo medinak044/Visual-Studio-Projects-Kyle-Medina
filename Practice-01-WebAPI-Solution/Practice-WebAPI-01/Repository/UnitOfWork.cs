@@ -3,20 +3,20 @@ using Practice_WebAPI_01.Interfaces;
 
 namespace Practice_WebAPI_01.Repository;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly DataContext _context;
 
     //public IHeroRepository Hero { get; private set; }
     //public IWeaponRepository Weapon { get; private set; }
-    public IWeaponTypeRepository WeaponType { get; private set; }
+    public IWeaponTypeRepository WeaponTypes { get; private set; }
 
     public UnitOfWork(DataContext context)
     {
         _context = context;
-        //Hero = new HeroRepository(_context);
-        //Weapon = new WeaponRepository(_context);
-        WeaponType = new WeaponTypeRepository(_context);
+        //Heroes = new HeroRepository(_context);
+        //Weapons = new WeaponRepository(_context);
+        WeaponTypes = new WeaponTypeRepository(_context);
 
     }
 
@@ -27,8 +27,14 @@ public class UnitOfWork : IUnitOfWork
         return saved > 0 ? true : false;
     }
 
+    //public async Task<bool> Dispose()
+    //{
+    //    await _context.DisposeAsync();
+    //    return true;
+    //}
+
     public void Dispose()
     {
-        _context.Dispose();
+        _context.DisposeAsync();
     }
 }

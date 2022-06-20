@@ -12,4 +12,5 @@ public interface IRepository<T> where T : class
     Task<bool> Add(T entity); // returns void to separate Save() logic
     Task<bool> Remove(T entity);
     Task<bool> RemoveRange(IEnumerable<T> entity);
+    Task<bool> Update(T entity);
 }

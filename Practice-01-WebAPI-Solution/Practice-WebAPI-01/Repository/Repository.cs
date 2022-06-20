@@ -22,50 +22,15 @@ public class Repository<T> : IRepository<T> where T : class
         return true;
     }
 
-    //// XXX
-    //public virtual async Task<bool> Exists(string name)
-    //{
-    //    name = name.ToUpper();
-    //    //var x = await _context..Where(h => h.UserName.Trim().ToUpper() == name.Trim().ToUpper()).FirstOrDefaultAsync();
-        
-    //    // Make sure record's name and argument's name are .ToUpper() for comparison
-    //    var x = await dbSet.
-
-    //    if (x != null)
-    //        return true; // If Hero name already exists
-
-    //    return false;
-    //}
-
     public virtual async Task<bool> Exists(Expression<Func<T, bool>> predicate)
     {
-        var x = await dbSet.Where(predicate).FirstOrDefaultAsync();
-
-        if (x != null)
-            return true; // If already exists
-
-        return false;
+        return await dbSet.AnyAsync(predicate);
     }
 
     public virtual async Task<IEnumerable<T>> GetAll()
     {
         return await dbSet.ToListAsync();
     }
-
-    ////XXX
-    //public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> filter)
-    //{
-    //    IQueryable<T> query = dbSet;
-
-    //    //query = await query.FirstOrDefaultAsync(filter);
-
-    //    //return query.FirstOrDefault();
-    //    query = query.Where(filter);
-
-    //    return query.FirstOrDefault();
-    //}
-
-    //GetById() replaces GetFirstOrDefault()
     public virtual async Task<T> GetById(int id)
     {
         return await dbSet.FindAsync(id);
@@ -80,6 +45,25 @@ public class Repository<T> : IRepository<T> where T : class
     public virtual async Task<bool> RemoveRange(IEnumerable<T> entity)
     {
         dbSet.RemoveRange(entity);
+        return true;
+    }
+
+    public virtual async Task<bool> Update(T entity)
+    {
+        _context.Update(entity);
+        return true; // Remember to call Save() after this
+    }
+
+    // Might have to code a custom Upsert method for each repository
+    public virtual async Task<bool> Upsert(T entity, Expression<Func<T, bool>> predicate)
+    {
+        var existingEntity = await dbSet.Where(predicate).FirstOrDefaultAsync();
+
+        if (existingEntity == null)
+            return await Add(entity);
+
+        // Somehow map entity's values to existingEntity's fields
+
         return true;
     }
 }

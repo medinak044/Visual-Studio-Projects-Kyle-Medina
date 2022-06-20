@@ -4,7 +4,7 @@ namespace Practice_WebAPI_01.Interfaces;
 
 public interface IWeaponTypeRepository: IRepository<WeaponType>
 {
-    //void Update(WeaponType obj);
+    Task<bool> UpdateWeaponType(WeaponType obj);
 
     //Task<WeaponType> GetFirstOrDefault(int weaponTypeId);
     //Task<ICollection<WeaponType>> GetAll();
