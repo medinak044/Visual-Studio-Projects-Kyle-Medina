@@ -53,7 +53,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
             return BadRequest(ModelState);
 
         // Search the db if the new Hero's name already exists
-        if (await _unitOfWork.Heroes.Exists(h => 
+        if (await _unitOfWork.Heroes.Exists(h =>
         h.UserName.Trim().ToUpper() == heroDto.UserName.Trim().ToUpper()))
             return BadRequest("Username is taken");
 
@@ -71,6 +71,63 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         // End method by indicating hero creation was successful
         return Ok("Successfully created");
     }
+
+    [HttpPut("update-hero")]
+    public async Task<ActionResult> UpdateHero(HeroDto updatedHero)
+    {
+        #region Validations
+        if (updatedHero == null)
+            return BadRequest(ModelState);
+
+        // Check if weaponType to be updated actually exists
+        if (!await _unitOfWork.Heroes.Exists(h => h.Id == updatedHero.Id))
+            return NotFound();
+
+        if (!ModelState.IsValid)
+            return BadRequest();
+        #endregion
+
+        var mappedHero = _mapper.Map<Hero>(updatedHero);
+
+        await _unitOfWork.Heroes.Update(mappedHero);
+        if (!await _unitOfWork.Save())
+        {
+            ModelState.AddModelError("", "Something went wrong while updating");
+            return StatusCode(500, ModelState);
+        }
+
+        return NoContent();
+    }
+    //[HttpPut("update-hero")]
+    //public async Task<ActionResult> UpdateHero(int heroId, HeroDto updatedHero)
+    //{
+    //    #region Validations
+    //    if (updatedHero == null)
+    //        return BadRequest(ModelState);
+
+    //    // Check if ids match
+    //    if (heroId != updatedHero.Id)
+    //        return BadRequest(ModelState);
+
+    //    // Check if weaponType to be updated actually exists
+    //    if (!await _unitOfWork.Heroes.Exists(h => h.Id == heroId))
+    //        return NotFound();
+
+    //    if (!ModelState.IsValid)
+    //        return BadRequest();
+    //    #endregion
+
+    //    var mappedHero = _mapper.Map<Hero>(updatedHero);
+
+    //    await _unitOfWork.Heroes.Update(mappedHero);
+    //    if (!await _unitOfWork.Save())
+    //    {
+    //        ModelState.AddModelError("", "Something went wrong while updating");
+    //        return StatusCode(500, ModelState);
+    //    }
+
+    //    return NoContent();
+    //}
 
     [HttpDelete("delete-hero")]
     public async Task<ActionResult> DeleteHero(int heroId)
