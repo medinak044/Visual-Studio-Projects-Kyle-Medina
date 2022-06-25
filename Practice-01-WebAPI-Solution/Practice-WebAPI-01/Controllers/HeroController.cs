@@ -20,9 +20,9 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     }
 
     [HttpGet("{heroId}", Name = "get-hero")]
-    public async Task<ActionResult<Hero>> GetHero(int heroId)
+    public async Task<ActionResult<HeroDto>> GetHero(int heroId)
     {
-        var hero = await _unitOfWork.Heroes.GetById(heroId);
+        var hero = _mapper.Map<HeroDto>(await _unitOfWork.Heroes.GetById(heroId));
 
         if (hero == null)
             return NotFound();
@@ -35,7 +35,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
 
 
     [HttpGet("get-heroes")]
-    public async Task<ActionResult<IEnumerable<Hero>>> GetHeroes()
+    public async Task<ActionResult<IEnumerable<HeroDto>>> GetHeroes()
     {
         var heroes = await _unitOfWork.Heroes.GetAll();
 
