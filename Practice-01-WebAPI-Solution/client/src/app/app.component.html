@@ -6,11 +6,13 @@
     <th>Credit</th>
   </thead>
   <tbody>
+    <!-- To prevent data updating in real time: https://youtu.be/eCbaZixsP-s?list=PLEdToXlOABZCA3ysfnDbL0ZIh1EHSSTF2&t=5125 -->
     <tr *ngFor="let hero of heroes">
       <td>{{hero.userName}}</td>
       <td>{{hero.credit}}</td>
+      <td><button (click)="editHero(hero)">Edit</button></td>
     </tr>
   </tbody>
 </table>
 
-<app-edit-hero></app-edit-hero>
+<app-edit-hero [hero]="heroToEdit" (heroesUpdated)="updateHeroList($event)"></app-edit-hero>

@@ -8,7 +8,7 @@ import { Hero } from '../models/hero';
   providedIn: 'root'
 })
 export class HeroService {
-  private url = "Hero"
+  private url = "Hero" // From "HeroController"
   constructor(private http: HttpClient) { }
 
   public getHeroes(): Observable<Hero[]> {
