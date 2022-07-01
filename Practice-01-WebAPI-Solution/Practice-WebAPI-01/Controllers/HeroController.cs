@@ -19,7 +19,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         _unitOfWork = unitOfWork;
     }
 
-    [HttpGet("{heroId}", Name = "get-hero")]
+    [HttpGet("{heroId}")]
     public async Task<ActionResult<HeroDto>> GetHero(int heroId)
     {
         var hero = _mapper.Map<HeroDto>(await _unitOfWork.Heroes.GetById(heroId));
@@ -34,7 +34,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     }
 
 
-    [HttpGet("get-heroes")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<HeroDto>>> GetHeroes()
     {
         var heroes = await _unitOfWork.Heroes.GetAll();
@@ -45,7 +45,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         return Ok(heroes);
     }
 
-    [HttpPost("register")]
+    [HttpPost]
     public async Task<ActionResult> RegisterHero(HeroDto heroDto)
     {
         // Check if dto arrives with data
@@ -72,7 +72,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
         return Ok("Successfully created");
     }
 
-    [HttpPut("update-hero")]
+    [HttpPut]
     public async Task<ActionResult> UpdateHero(HeroDto updatedHero)
     {
         #region Validations
@@ -129,7 +129,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     //    return NoContent();
     //}
 
-    [HttpDelete("delete-hero")]
+    [HttpDelete]
     public async Task<ActionResult> DeleteHero(int heroId)
     {
         var heroToDelete = await _unitOfWork.Heroes.GetById(heroId);
