@@ -8,44 +8,44 @@ namespace Practice_WebAPI_01.Repository;
 public class Repository<T> : IRepository<T> where T : class
 {
     private readonly DataContext _context;
-    internal DbSet<T> dbSet;
+    internal DbSet<T> _dbSet;
 
     public Repository(DataContext context)
     {
         _context = context;
-        this.dbSet = _context.Set<T>();
+        _dbSet = _context.Set<T>();
     }
 
     public virtual async Task<bool> Add(T entity)
     {
-        await dbSet.AddAsync(entity);
+        await _dbSet.AddAsync(entity);
         return true;
     }
 
     public virtual async Task<bool> Exists(Expression<Func<T, bool>> predicate)
     {
-        return await dbSet.AnyAsync(predicate);
+        return await _dbSet.AnyAsync(predicate);
     }
 
     public virtual async Task<IEnumerable<T>> GetAll()
     {
-        return await dbSet.ToListAsync();
+        return await _dbSet.ToListAsync();
     }
 
     public virtual async Task<T> GetById(int id)
     {
-        return await dbSet.FindAsync(id);
+        return await _dbSet.FindAsync(id);
     }
 
     public virtual async Task<bool> Remove(T entity)
     {
-        dbSet.Remove(entity);
+        _dbSet.Remove(entity);
         return true;
     }
 
     public virtual async Task<bool> RemoveRange(IEnumerable<T> entity)
     {
-        dbSet.RemoveRange(entity);
+        _dbSet.RemoveRange(entity);
         return true;
     }
 
