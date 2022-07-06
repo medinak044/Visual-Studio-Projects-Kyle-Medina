@@ -55,6 +55,7 @@ public class AuthentificationController : ControllerBase
             UserName = requestDto.Email
         };
 
+        // Note: Identity requires passwords to have X amount of characters, capitalized letter, number, and symbol
         var isCreated = await _userManager.CreateAsync(newUser, requestDto.Password);
         if (!isCreated.Succeeded)
         {
@@ -65,44 +66,113 @@ public class AuthentificationController : ControllerBase
             });
         }
 
-        // Generate token
-        var token = GenerateJwtToken(newUser);
+        // Generate the token
+        var jwtToken = GenerateJwtToken(newUser);
 
         return Ok(new AuthResult()
         {
             Result = true,
-            Token = token
+            Token = jwtToken
+        });
+    }
+
+    [Route("Login")]
+    [HttpPost]
+    public async Task<ActionResult> Login([FromBody] UserLoginRequestDto loginRequest)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new AuthResult()
+            {
+                Result = false,
+                Errors = new List<string>() { "Invalid payload" }
+            });
+
+        // Check if user exists
+        var existingUser = await _userManager.FindByEmailAsync(loginRequest.Email);
+        if (existingUser == null)
+        {
+            return BadRequest(new AuthResult()
+            {
+                Result = false,
+                Errors = new List<string>() { "Email doesn't exist" }
+            });
+        }
+
+        // Verify password
+        var isCorrect = await _userManager.CheckPasswordAsync(existingUser, loginRequest.Password);
+        if (!isCorrect)
+        {
+            return BadRequest(new AuthResult()
+            {
+                Result = false,
+                Errors = new List<string>() { "Invalid credentials" }
+            });
+        }
+
+        var jwtToken = GenerateJwtToken(existingUser);
+
+        return Ok(new AuthResult()
+        {
+            Result = true,
+            Token = jwtToken
         });
     }
 
 
+    #region GenerateJwtToken notes
+    //private string GenerateJwtToken(IdentityUser user)
+    //{
+    //    var jwtTokenHandler = new JwtSecurityTokenHandler(); // Create token handler
+
+    //    var key = Encoding.UTF8.GetBytes(_configuration.GetSection(key: "JwtConfig:Secret").Value); // Created key from configuration
+
+    //    // Create new token descriptor and fill it with new token info
+    //    var tokenDescriptor = new SecurityTokenDescriptor() 
+    //    {
+    //        Subject = new ClaimsIdentity(new[]
+    //        {
+    //            new Claim("Id", user.Id),
+    //            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+    //            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+    //            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    //            new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
+    //        }),
+    //        Expires = DateTime.Now.AddHours(1), // Define token's lifetime before expiration
+    //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256) // https://youtu.be/Y-MjCw6thao?t=4886
+    //    };
+
+    //    var token = jwtTokenHandler.CreateToken(tokenDescriptor); // Combine token descriptor with handler
+    //    var jwtToken = jwtTokenHandler.WriteToken(token); // Converts from SecurityToken to string
+
+    //    return jwtToken;
+    //}
+    #endregion
     private string GenerateJwtToken(IdentityUser user)
     {
-        var jwtTokenHandler = new JwtSecurityTokenHandler(); // Create token handler
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-        var key = Encoding.UTF8.GetBytes(_configuration.GetSection(key: "JwtConfig:Secret").Value); // Created key from configuration
-
-        // Create new token descriptor and fill it with new token info
-        var tokenDescriptor = new SecurityTokenDescriptor() 
+        var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
+        var date = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
+        
+        // Token descriptor
+        var tokenDescriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id", user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, value:user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
             }),
-            Expires = DateTime.Now.AddHours(1), // Define token's lifetime before expiration
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256) // https://youtu.be/Y-MjCw6thao?t=4886
+
+            Expires = date.AddHours(1),
+            NotBefore = date,
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
 
-        var token = jwtTokenHandler.CreateToken(tokenDescriptor); // Combine token descriptor with handler
-        var jwtToken = jwtTokenHandler.WriteToken(token); // Converts from SecurityToken to string
-
-        return jwtToken;
+        var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+        return jwtTokenHandler.WriteToken(token);
     }
-
-
 
 }
