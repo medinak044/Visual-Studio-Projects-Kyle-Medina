@@ -5,4 +5,4 @@
     "Secret":  "Secret key string"
   }
 - Create "JwtConfig.cs" in Configurations folder
-- Inject in Program.cs
+- Inject Jwt authorization and Identity in Program.cs
