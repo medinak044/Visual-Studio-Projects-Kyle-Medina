@@ -67,7 +67,7 @@ public class AuthentificationController : ControllerBase
         }
 
         // Generate the token
-        var jwtToken = GenerateJwtToken(newUser);
+        var jwtToken = GenerateJwtToken_1(newUser);
 
         return Ok(new AuthResult()
         {
@@ -147,12 +147,12 @@ public class AuthentificationController : ControllerBase
     //    return jwtToken;
     //}
     #endregion
-    private string GenerateJwtToken(IdentityUser user)
+    private string GenerateJwtToken_1(IdentityUser user)
     {
 
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
         var currentDate = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
-        
+
         // Token descriptor
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
@@ -182,7 +182,7 @@ public class AuthentificationController : ControllerBase
 
         var claims = new[]
             {
-            // There is no ClaimTypes.Id
+            new Claim("Id", user.Id), // There is no ClaimTypes.Id
             new Claim(ClaimTypes.NameIdentifier, user.UserName),
             new Claim(ClaimTypes.Email, user.Email),
             //new Claim(ClaimTypes.GivenName, loggedInUser.GivenName),
@@ -190,20 +190,20 @@ public class AuthentificationController : ControllerBase
             //new Claim(ClaimTypes.Role, loggedInUser.Role)
             };
 
-            var token = new JwtSecurityToken
-            (
-                //issuer: builder.Configuration["Jwt:Issuer"],
-                //audience: builder.Configuration["Jwt:Audience"],
-                claims: claims,
-                expires: currentDate.AddHours(1),
-                notBefore: currentDate,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(key), 
-                    SecurityAlgorithms.HmacSha256)
-            );
+        var token = new JwtSecurityToken
+        (
+            //issuer: builder.Configuration["Jwt:Issuer"],
+            //audience: builder.Configuration["Jwt:Audience"],
+            claims: claims,
+            expires: currentDate.AddHours(1),
+            notBefore: currentDate,
+            signingCredentials: new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256)
+        );
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return tokenString;
+        return tokenString;
     }
 }
