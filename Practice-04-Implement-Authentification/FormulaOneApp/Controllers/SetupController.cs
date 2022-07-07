@@ -80,6 +80,9 @@ public class SetupController: ControllerBase
             return BadRequest(new { error = $"Role does not exist" });
         }
 
+        // Check if user already has the role
+        //bool hasRole = await RoleManager.HasRoleAsync(roleName);
+
         var result = await _userManager.AddToRoleAsync(user, roleName);
 
         // Check if the user has been assigned to the role successfully
@@ -91,5 +94,54 @@ public class SetupController: ControllerBase
 
         _logger.LogInformation($"User successfully added to the role");
         return Ok(new { result = $"User successfully added to the role" });
+    }
+
+    [HttpGet("GetUserRoles")]
+    public async Task<ActionResult> GetUserRoles(string email)
+    {
+        // Check if email is valid
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            _logger.LogInformation($"The user with the {email} does not exist");
+            return BadRequest(new { error = $"User does not exist" });
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Ok(roles);
+    }
+
+    [HttpPost("RemoveUserFromRole")]
+    public async Task<ActionResult> RemoveUserFromRole(string email, string roleName)
+    {
+        // Check if the user exists
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            _logger.LogInformation($"The user with the {email} does not exist");
+            return BadRequest(new { error = $"User does not exist" });
+        }
+
+        // Check if the role exists
+        bool roleExists = await _roleManager.RoleExistsAsync(roleName);
+        if (!roleExists)
+        {
+            _logger.LogInformation($"The role {roleName} does not exist");
+            return BadRequest(new { error = $"Role does not exist" });
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+        // Check if the user has been removed from the role successfully
+        if (!result.Succeeded)
+        {
+            _logger.LogInformation($"Unable to remove user {email} from the role {roleName}");
+            return BadRequest(new { error = $"Unable to remove user {email} from the role {roleName}" });
+        }
+
+        _logger.LogInformation($"User {email} removed from the role {roleName}");
+        return Ok(new { result = $"User {email} removed from the role {roleName}" });
+
     }
 }

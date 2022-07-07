@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using FormulaOneApp.Helpers;
 
 namespace FormulaOneApp.Controllers;
 
@@ -65,6 +66,9 @@ public class AuthentificationController : ControllerBase
                 Errors = new List<string>() { "Server error" }
             });
         }
+
+        // Add user to a default role
+        await _userManager.AddToRoleAsync(newUser, RolesString.RoleTypeEnum.AppUser.ToString());
 
         // Generate the token
         var jwtToken = GenerateJwtToken_1(newUser);
