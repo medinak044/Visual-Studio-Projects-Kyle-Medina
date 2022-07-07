@@ -175,6 +175,7 @@ public class AuthentificationController : ControllerBase
         return jwtTokenHandler.WriteToken(token);
     }
 
+    // Source: https://www.youtube.com/watch?v=f2IdQqpjR0c
     private string GenerateJwtToken_2(IdentityUser user)
     {
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
