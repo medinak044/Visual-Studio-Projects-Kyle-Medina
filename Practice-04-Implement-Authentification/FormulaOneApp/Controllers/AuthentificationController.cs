@@ -109,7 +109,7 @@ public class AuthentificationController : ControllerBase
             });
         }
 
-        var jwtToken = GenerateJwtToken(existingUser);
+        var jwtToken = GenerateJwtToken_2(existingUser);
 
         return Ok(new AuthResult()
         {
@@ -149,10 +149,9 @@ public class AuthentificationController : ControllerBase
     #endregion
     private string GenerateJwtToken(IdentityUser user)
     {
-        var jwtTokenHandler = new JwtSecurityTokenHandler();
 
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
-        var date = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
+        var currentDate = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
         
         // Token descriptor
         var tokenDescriptor = new SecurityTokenDescriptor()
@@ -166,13 +165,45 @@ public class AuthentificationController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
             }),
 
-            Expires = date.AddHours(1),
-            NotBefore = date,
+            Expires = currentDate.AddHours(1),
+            NotBefore = currentDate,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
 
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);
         return jwtTokenHandler.WriteToken(token);
     }
 
+    private string GenerateJwtToken_2(IdentityUser user)
+    {
+        var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
+        var currentDate = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
+
+        var claims = new[]
+            {
+            // There is no ClaimTypes.Id
+            new Claim(ClaimTypes.NameIdentifier, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email),
+            //new Claim(ClaimTypes.GivenName, loggedInUser.GivenName),
+            //new Claim(ClaimTypes.Surname, loggedInUser.Surname),
+            //new Claim(ClaimTypes.Role, loggedInUser.Role)
+            };
+
+            var token = new JwtSecurityToken
+            (
+                //issuer: builder.Configuration["Jwt:Issuer"],
+                //audience: builder.Configuration["Jwt:Audience"],
+                claims: claims,
+                expires: currentDate.AddHours(1),
+                notBefore: currentDate,
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(key), 
+                    SecurityAlgorithms.HmacSha256)
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
+    }
 }
