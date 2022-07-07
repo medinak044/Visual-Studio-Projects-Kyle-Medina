@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FormulaOneApp.Controllers;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Route("api/[controller]")] // api/teams
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "AppUser")]
 public class TeamsController : ControllerBase
 {
     private static AppDbContext _context;

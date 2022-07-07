@@ -81,7 +81,15 @@ public class SetupController: ControllerBase
         }
 
         // Check if user already has the role
-        //bool hasRole = await RoleManager.HasRoleAsync(roleName);
+        var userRoles = await _userManager.GetRolesAsync(user);
+        foreach (var userRole in userRoles)
+        {
+            if (userRole == roleName)
+            {
+                _logger.LogInformation($"User {user} already has role {roleName}");
+                return BadRequest(new { error = $"User {user} already has role {roleName}" });
+            }
+        }
 
         var result = await _userManager.AddToRoleAsync(user, roleName);
 
