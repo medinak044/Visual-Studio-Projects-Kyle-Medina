@@ -20,15 +20,15 @@ public class TeamsController : ControllerBase
         _context = context;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpGet("GetTeams")]
+    public async Task<ActionResult> GetTeams()
     {
         var teams = await _context.Teams.ToListAsync();
         return Ok(teams);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    [HttpGet("GetTeamById/{id:int}")]
+    public async Task<ActionResult> GetTeamById(int id)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -38,8 +38,9 @@ public class TeamsController : ControllerBase
         return Ok(team);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Post(Team team)
+    [HttpPost("CreateTeam")]
+    //[Authorize(Policy = "DepartmentPolicy")]
+    public async Task<ActionResult> CreateTeam(Team team)
     {
         await _context.Teams.AddAsync(team);
         await _context.SaveChangesAsync();
@@ -47,8 +48,8 @@ public class TeamsController : ControllerBase
         return CreatedAtAction("Get", team.Id, team);
     }
 
-    [HttpPatch]
-    public async Task<IActionResult> Patch(int id, string country)
+    [HttpPatch("UpdateTeam")]
+    public async Task<ActionResult> UpdateTeam(int id, string country)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -62,8 +63,8 @@ public class TeamsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("DeleteTeam")]
+    public async Task<ActionResult> DeleteTeam(int id)
     {
         var team = await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
 

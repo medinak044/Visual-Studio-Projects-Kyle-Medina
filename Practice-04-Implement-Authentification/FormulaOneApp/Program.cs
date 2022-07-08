@@ -69,10 +69,19 @@ builder.Services.AddAuthentication(options =>
         };
     });
 #endregion
+// Added "IdentityRole" to include roles
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDbContext>();
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
 //    .AddEntityFrameworkStores<AppDbContext>();
+#region Authorization
+// Creating policy that attaches certain claims
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("DepartmentPolicy",
+//        policy => policy.RequireClaim("Department"));
+//});
+#endregion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

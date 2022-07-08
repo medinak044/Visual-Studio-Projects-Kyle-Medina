@@ -215,8 +215,6 @@ public class AuthentificationController : ControllerBase
     // Get all valid claims for the corresponding user. Explanation: https://youtu.be/eVxzuOxWEiY?t=4259
     private async Task<List<Claim>> GetAllValidClaimsAsync_2(IdentityUser user)
     {
-        var options = new IdentityOptions();
-
         var claims = new List<Claim>
         {
             new Claim("Id", user.Id), // There is no ClaimTypes.Id
