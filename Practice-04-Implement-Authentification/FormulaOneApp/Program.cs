@@ -44,9 +44,23 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 #region Jwt Authentification
 // Setup ref: https://www.youtube.com/watch?v=Y-MjCw6thao
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(key:"JwtConfig"));
+
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var tokenValidationParams = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false, // Set to false for development: running the app locally on device might cause the generated https ssl credentials to become invalidated, causing an issue
+    ValidateAudience = false, // for dev
+    RequireExpirationTime = false, // for dev -- needs to be updated when refresh token is added
+    ValidateLifetime = true, // Calculates how long the token will be valid
+};
+
+builder.Services.AddSingleton(tokenValidationParams);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,18 +69,8 @@ builder.Services.AddAuthentication(options =>
 })
     .AddJwtBearer(jwt =>
     {
-        var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
-
         jwt.SaveToken = true;
-        jwt.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false, // Set to false for development: running the app locally on device might cause the generated https ssl credentials to become invalidated, causing an issue
-            ValidateAudience = false, // for dev
-            RequireExpirationTime = false, // for dev -- needs to be updated when refresh token is added
-            ValidateLifetime = true, // Calculates how long the token will be valid
-        };
+        jwt.TokenValidationParameters = tokenValidationParams;
     });
 #endregion
 // Added "IdentityRole" to include roles
@@ -74,7 +78,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddEntityFrameworkStores<AppDbContext>();
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
 //    .AddEntityFrameworkStores<AppDbContext>();
-#region Authorization
+#region Authorization (Policy-based)
 // Creating policy that attaches certain claims
 //builder.Services.AddAuthorization(options =>
 //{

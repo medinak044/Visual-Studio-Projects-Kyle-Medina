@@ -17,22 +17,28 @@ namespace FormulaOneApp.Controllers;
 [ApiController]
 public class AuthentificationController : ControllerBase
 {
+    private readonly AppDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ILogger<AuthentificationController> _logger;
+    private readonly TokenValidationParameters _tokenValidationParams;
 
     public AuthentificationController(
+        AppDbContext context,
         UserManager<IdentityUser> userManager,
         IConfiguration configuration,
         RoleManager<IdentityRole> roleManager,
-        ILogger<AuthentificationController> logger
+        ILogger<AuthentificationController> logger,
+        TokenValidationParameters tokenValidationParams
         )
     {
+        _context = context;
         _userManager = userManager;
         _configuration = configuration;
         _roleManager = roleManager;
         _logger = logger;
+        _tokenValidationParams = tokenValidationParams;
     }
 
     [HttpPost("Register")]
@@ -47,7 +53,7 @@ public class AuthentificationController : ControllerBase
         {
             return BadRequest(new AuthResult()
             {
-                Result = false,
+                Success = false,
                 Errors = new List<string>() { "Email already exists" }
             });
         }
@@ -64,7 +70,7 @@ public class AuthentificationController : ControllerBase
         {
             return BadRequest(new AuthResult()
             {
-                Result = false,
+                Success = false,
                 Errors = new List<string>() { "Server error" }
             });
         }
@@ -75,11 +81,7 @@ public class AuthentificationController : ControllerBase
         // Generate the token
         var jwtToken = await GenerateJwtTokenAsync_1(newUser);
 
-        return Ok(new AuthResult()
-        {
-            Result = true,
-            Token = jwtToken
-        });
+        return Ok(jwtToken); // Return the token
     }
 
     [HttpPost("Login")]
@@ -88,7 +90,7 @@ public class AuthentificationController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(new AuthResult()
             {
-                Result = false,
+                Success = false,
                 Errors = new List<string>() { "Invalid payload" }
             });
 
@@ -98,7 +100,7 @@ public class AuthentificationController : ControllerBase
         {
             return BadRequest(new AuthResult()
             {
-                Result = false,
+                Success = false,
                 Errors = new List<string>() { "Email doesn't exist" }
             });
         }
@@ -109,18 +111,14 @@ public class AuthentificationController : ControllerBase
         {
             return BadRequest(new AuthResult()
             {
-                Result = false,
+                Success = false,
                 Errors = new List<string>() { "Invalid credentials" }
             });
         }
 
         var jwtToken = await GenerateJwtTokenAsync_1(existingUser);
 
-        return Ok(new AuthResult()
-        {
-            Result = true,
-            Token = jwtToken
-        });
+        return Ok(jwtToken);
     }
 
 
@@ -152,7 +150,7 @@ public class AuthentificationController : ControllerBase
     //    return jwtToken;
     //}
     #endregion
-    private async Task<string> GenerateJwtTokenAsync_1(IdentityUser user)
+    private async Task<AuthResult> GenerateJwtTokenAsync_1(IdentityUser user)
     {
 
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
@@ -171,14 +169,37 @@ public class AuthentificationController : ControllerBase
             //    new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
             //}),
             Subject = new ClaimsIdentity(claims),
-            Expires = currentDate.AddHours(1),
+            Expires = currentDate.AddSeconds(30), // Temp: For refresh token demo purposes
+            //Expires = currentDate.AddHours(1),
             NotBefore = currentDate,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();
+
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-        return jwtTokenHandler.WriteToken(token);
+        var jwtToken = jwtTokenHandler.WriteToken(token);
+
+        var refreshToken = new RefreshToken()
+        {
+            JwtId = token.Id,
+            IsUsed = false,
+            IsRevoked = false,
+            UserId = user.Id,
+            AddedDate = currentDate,
+            ExpiryDate = currentDate.AddMonths(6),
+            Token = RandomString(35) + Guid.NewGuid(),
+        };
+
+        await _context.RefreshTokens.AddAsync(refreshToken); // Add changes to memory
+        await _context.SaveChangesAsync(); // Save changes to db
+
+        return new AuthResult()
+        {
+            Token = jwtToken,
+            RefreshToken = refreshToken.Token,
+            Success = true,
+        };
     }
 
     // Source: https://www.youtube.com/watch?v=f2IdQqpjR0c
@@ -220,6 +241,7 @@ public class AuthentificationController : ControllerBase
             new Claim("Id", user.Id), // There is no ClaimTypes.Id
             new Claim(ClaimTypes.NameIdentifier, user.UserName),
             new Claim(ClaimTypes.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // For "JwtId"
             // (The role claim will be added here)
         };
 
@@ -244,5 +266,13 @@ public class AuthentificationController : ControllerBase
         }
 
         return claims;
+    }
+
+    private string RandomString(int length)
+    {
+        var random = new Random();
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(x => x[random.Next(x.Length)]).ToArray());
     }
 }
