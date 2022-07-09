@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using FormulaOneApp.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace FormulaOneApp.Controllers;
 
@@ -121,6 +122,32 @@ public class AuthentificationController : ControllerBase
         return Ok(jwtToken);
     }
 
+    [HttpPost("RefreshToken")]
+    public async Task<ActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthResult()
+            {
+                Success = false,
+                Errors = new List<string>() { "Invalid payload" }
+            });
+        }
+
+        var result = await VerifyAndGenerateToken(tokenRequest);
+        if (result == null) // In case something goes wrong in the middle of the process
+        {
+            return BadRequest(new AuthResult()
+            {
+                Success = false,
+                Errors = new List<string>() { "Invalid token" }
+            });
+        }
+        return Ok(result);
+    }
+
+
+
 
     #region GenerateJwtToken notes
     //private string GenerateJwtToken(IdentityUser user)
@@ -160,14 +187,6 @@ public class AuthentificationController : ControllerBase
         // Token descriptor
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
-            //Subject = new ClaimsIdentity(new[]
-            //{
-            //    new Claim("Id", user.Id),
-            //    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            //    new Claim(JwtRegisteredClaimNames.Email, value:user.Email),
-            //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            //    new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
-            //}),
             Subject = new ClaimsIdentity(claims),
             Expires = currentDate.AddSeconds(30), // Temp: For refresh token demo purposes
             //Expires = currentDate.AddHours(1),
@@ -242,6 +261,7 @@ public class AuthentificationController : ControllerBase
             new Claim(ClaimTypes.NameIdentifier, user.UserName),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // For "JwtId"
+            // new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
             // (The role claim will be added here)
         };
 
@@ -266,6 +286,112 @@ public class AuthentificationController : ControllerBase
         }
 
         return claims;
+    }
+
+    private async Task<AuthResult> VerifyAndGenerateToken(TokenRequest tokenRequest)
+    {
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+        try // Run the token request through validations
+        {
+            // Check that the string is actually in jwt token format
+            // (The token validation parameters were defined in the Program.cs class)
+            var tokenInVerification = jwtTokenHandler.ValidateToken(tokenRequest.Token,
+                _tokenValidationParams, out var validatedToken);
+
+            // Check if the encryption algorithm matches
+            if (validatedToken is JwtSecurityToken jwtSecurityToken)
+            {
+                bool result = jwtSecurityToken.Header.Alg
+                    .Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCulture);
+
+                if (result == false)
+                    return null;
+            }
+
+            // Check if token has expired (don't generate new token if current token is still usable)
+            // "long" was used because of the long utc time string
+            var utcExpiryDate = long.Parse(tokenInVerification.Claims
+                .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+            // Convert into a usable date type
+            var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
+
+            if (expiryDate > DateTime.UtcNow)
+            {
+                return new AuthResult() { 
+                    Success = false,
+                    Errors = new List<string>() { "Token has not yet expired" }
+                };
+            }
+
+            // Check if token exists in db
+            var storedToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(x => x.Token == tokenRequest.RefreshToken);
+
+            if (storedToken == null)
+            {
+                return new AuthResult()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Token does not exist" }
+                };
+            }
+
+            // Check if token is already used
+            if (storedToken.IsUsed)
+            {
+                return new AuthResult()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Token has been used" }
+                };
+            }
+
+            // Check if token has been revoked
+            if (storedToken.IsRevoked)
+            {
+                return new AuthResult()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Token has been revoked" }
+                };
+            }
+
+            // Check if jti matches the id of the refresh token that exists in our db (validate the id)
+            var jti = tokenInVerification.Claims
+                .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
+
+            if (storedToken.JwtId != jti)
+            {
+                return new AuthResult()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Token does not match" }
+                };
+            }
+
+            // First, update current token
+            storedToken.IsUsed = true; // Prevent the current token from being used in the future
+            _context.RefreshTokens.Update(storedToken);
+            await _context.SaveChangesAsync(); // Save changes
+
+            // Then, generate a new jwt token, then assign it to the user
+            var dbUser = await _userManager.FindByIdAsync(storedToken.UserId); // Find the IdentityUser by the user id on the current token
+            return await GenerateJwtTokenAsync_1(dbUser);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    // Converts date data to DateTime
+    private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+    {
+        var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToUniversalTime();
+        return dateTimeVal;
     }
 
     private string RandomString(int length)
