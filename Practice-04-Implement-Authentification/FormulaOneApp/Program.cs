@@ -49,12 +49,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Setup ref: https://www.youtube.com/watch?v=Y-MjCw6thao
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(key:"JwtConfig"));
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value));
 var tokenValidationParams = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(key),
+    IssuerSigningKey = key,
     ValidateIssuer = false, // Set to false for development: running the app locally on device might cause the generated https ssl credentials to become invalidated, causing an issue
+    //ValidIssuer = ,
     ValidateAudience = false, // for dev
     RequireExpirationTime = false, // for dev -- needs to be updated when refresh token is added
     ValidateLifetime = true, // Calculates how long the token will be valid

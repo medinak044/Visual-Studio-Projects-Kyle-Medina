@@ -180,7 +180,7 @@ public class AuthentificationController : ControllerBase
     private async Task<AuthResult> GenerateJwtTokenAsync_1(IdentityUser user)
     {
 
-        var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value));
         var currentDate = DateTime.UtcNow; // https://stackoverflow.com/questions/64256500/handler-createjwtsecuritytokendescriptor-idx12401
         var claims = await GetAllValidClaimsAsync_2(user);
 
@@ -191,7 +191,7 @@ public class AuthentificationController : ControllerBase
             Expires = currentDate.AddSeconds(30), // Temp: For refresh token demo purposes
             //Expires = currentDate.AddHours(1),
             NotBefore = currentDate,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256) // Use .HmacSha512Signature instead
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();
