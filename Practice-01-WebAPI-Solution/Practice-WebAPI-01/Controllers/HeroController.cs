@@ -13,7 +13,9 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
 
-    public HeroController(IMapper mapper, IUnitOfWork unitOfWork)
+    public HeroController(
+        IMapper mapper, 
+        IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
@@ -142,7 +144,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
             return BadRequest(ModelState);
 
         // Must delete Items associated with the Hero
-        //if (!await _heroRepository.DeleteItems(itemToDelete))
+        //if (!await _unitOfWork.Heroessitory.DeleteItems(itemToDelete))
         //{
         //    ModelState.AddModelError("", "Something went wrong while deleting");
         //}
