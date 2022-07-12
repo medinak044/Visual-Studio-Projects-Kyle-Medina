@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Practice_WebAPI_01.Data;
 
@@ -16,81 +15,74 @@ namespace Practice_WebAPI_01.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Practice_WebAPI_01.Models.HeroUser", b =>
+            modelBuilder.Entity("Practice_WebAPI_01.Models.Hero", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Credit")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Heroes", (string)null);
+                    b.ToTable("Heroes");
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.Weapon", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("HeroUserId")
-                        .HasColumnType("int");
+                    b.Property<int?>("HeroId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("WeaponTypeId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HeroUserId");
+                    b.HasIndex("HeroId");
 
                     b.HasIndex("WeaponTypeId");
 
-                    b.ToTable("Weapons", (string)null);
+                    b.ToTable("Weapons");
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.WeaponType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("WeaponTypes", (string)null);
+                    b.ToTable("WeaponTypes");
                 });
 
             modelBuilder.Entity("Practice_WebAPI_01.Models.Weapon", b =>
                 {
-                    b.HasOne("Practice_WebAPI_01.Models.HeroUser", null)
+                    b.HasOne("Practice_WebAPI_01.Models.Hero", null)
                         .WithMany("Weapons")
-                        .HasForeignKey("HeroUserId");
+                        .HasForeignKey("HeroId");
 
                     b.HasOne("Practice_WebAPI_01.Models.WeaponType", "WeaponType")
                         .WithMany()
@@ -101,7 +93,7 @@ namespace Practice_WebAPI_01.Migrations
                     b.Navigation("WeaponType");
                 });
 
-            modelBuilder.Entity("Practice_WebAPI_01.Models.HeroUser", b =>
+            modelBuilder.Entity("Practice_WebAPI_01.Models.Hero", b =>
                 {
                     b.Navigation("Weapons");
                 });

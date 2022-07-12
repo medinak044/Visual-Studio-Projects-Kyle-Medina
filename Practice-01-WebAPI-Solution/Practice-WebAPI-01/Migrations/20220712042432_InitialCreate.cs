@@ -12,10 +12,10 @@ namespace Practice_WebAPI_01.Migrations
                 name: "Heroes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Credit = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Credit = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,9 +26,9 @@ namespace Practice_WebAPI_01.Migrations
                 name: "WeaponTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Type = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,18 +39,18 @@ namespace Practice_WebAPI_01.Migrations
                 name: "Weapons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WeaponTypeId = table.Column<int>(type: "int", nullable: false),
-                    HeroUserId = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    WeaponTypeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    HeroId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Weapons", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Weapons_Heroes_HeroUserId",
-                        column: x => x.HeroUserId,
+                        name: "FK_Weapons_Heroes_HeroId",
+                        column: x => x.HeroId,
                         principalTable: "Heroes",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -62,9 +62,9 @@ namespace Practice_WebAPI_01.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Weapons_HeroUserId",
+                name: "IX_Weapons_HeroId",
                 table: "Weapons",
-                column: "HeroUserId");
+                column: "HeroId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Weapons_WeaponTypeId",
