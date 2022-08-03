@@ -37,7 +37,7 @@ public class HeroController : ControllerBase // Inherit from ControllerBase inst
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<HeroDto>>> GetHeroes()
+    public async Task<ActionResult> GetHeroes()
     {
         var heroes = await _unitOfWork.Heroes.GetAll();
 
