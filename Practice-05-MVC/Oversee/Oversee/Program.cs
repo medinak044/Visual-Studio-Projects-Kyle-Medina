@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Oversee.Data;
+using Oversee.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionSQLServer"));
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnectionSQLite"));
 });
+builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<AppDbContext>();
+
 
 var app = builder.Build();
 

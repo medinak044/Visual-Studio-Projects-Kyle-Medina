@@ -11,5 +11,5 @@ public class ItemRecord
     [ForeignKey("Item")]
     public int ItemId { get; set; }
     public Item? Item { get; set; }
-    public ICollection<ItemRecordUser>? InvolvedUsers { get; set; }
+    public IEnumerable<ItemRecordUser>? InvolvedUsers { get; set; }
 }
