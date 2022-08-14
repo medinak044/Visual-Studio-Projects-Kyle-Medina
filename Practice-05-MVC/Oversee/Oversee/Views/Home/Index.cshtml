@@ -1,15 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="d-flex h-100 text-center text-bg-dark"style="margin-top: 19rem; margin-bottom: 0rem;">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <main class="px-3">
-            <h1>Cover your page.</h1>
-            <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-            <p class="lead">
-                <a href="#" class="btn btn-lg btn-primary fw-bold">Learn more</a>
-            </p>
-        </main>
+<div 
+@*    style="
+    height: 100%;
+    width: 100%;
+    background:url('https://drive.google.com/uc?export=view&id=1clyxf9ViARad93Oo-ytndeP_QBZByVLn');
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;"
+*@>
+    <div class="d-flex h-100 text-center text-bg-dark" style="margin-top: 19rem; margin-bottom: 0rem;">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <main class="px-3">
+                <h1>Welcome to Oversee</h1>
+                <p class="lead">Keep track of borrowed items with ease. Never forget giving back belongings again!</p>
+                <p class="lead">
+                    <a class="btn btn-lg btn-primary fw-bold"asp-area="" asp-controller="Account" asp-action="Login">Get started now</a>
+                </p>
+            </main>
+        </div>
     </div>
 </div>

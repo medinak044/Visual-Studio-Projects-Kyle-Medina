@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Oversee.Data;
@@ -21,8 +22,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AppDbContext>();
-
-
+#region Cookie Authentification
+builder.Services.AddMemoryCache(); // AddDistributedMemoryCache()
+builder.Services.AddSession();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+#endregion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
