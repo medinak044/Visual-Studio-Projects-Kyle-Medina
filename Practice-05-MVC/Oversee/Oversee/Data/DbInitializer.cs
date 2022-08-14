@@ -37,11 +37,11 @@ public class DbInitializer : IDbInitializer
         catch (Exception ex) { }
 
         // Create roles if they are not created
-        if (!await _roleManager.RoleExistsAsync(AccountRoles.Admin))
+        if (!await _roleManager.RoleExistsAsync(AccountRoles_SD.Admin))
         {
-            await _roleManager.CreateAsync(new IdentityRole(AccountRoles.Admin));
-            await _roleManager.CreateAsync(new IdentityRole(AccountRoles.AppUser));
-            await _roleManager.CreateAsync(new IdentityRole(AccountRoles.Example));
+            await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.Admin));
+            await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.AppUser));
+            await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.Example));
 
             // If roles are not created, create admin user as well
             AppUser createdAdminUser = new AppUser
@@ -55,7 +55,7 @@ public class DbInitializer : IDbInitializer
             await _userManager.CreateAsync(createdAdminUser, "Password!23");
 
             AppUser adminUser = await _userManager.FindByEmailAsync(createdAdminUser.Email);
-            await _userManager.AddToRoleAsync(adminUser, AccountRoles.Admin);
+            await _userManager.AddToRoleAsync(adminUser, AccountRoles_SD.Admin);
         }
 
         return;

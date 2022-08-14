@@ -1,6 +1,7 @@
 ﻿namespace Oversee.Data;
 
-public class AccountRoles
+// String Data
+public class AccountRoles_SD
 {
     public const string Admin = "Admin";
     public const string AppUser = "AppUser";

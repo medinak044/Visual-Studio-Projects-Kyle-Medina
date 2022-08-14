@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Oversee.Data
 
 @inject SignInManager<AppUser> SignInManager
 @*@inject UserManager<AppUser> UserManager*@
@@ -34,14 +35,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                            </li>
+                            @if (User.IsInRole(AccountRoles_SD.Admin))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                </li>
+                            }
+                        }
                     </ul>
                     <ul class="navbar-nav flex-grow-2 ms-auto">
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <button class="btn btn-danger" asp-area="" asp-controller="Account" asp-action="Logout">
+                                <a class="nav-link text-light btn btn-danger" asp-area="" asp-controller="Account" asp-action="Logout">
                                     Logout
-                                </button>
+                                </a>
                             </li>
                         }
                         else

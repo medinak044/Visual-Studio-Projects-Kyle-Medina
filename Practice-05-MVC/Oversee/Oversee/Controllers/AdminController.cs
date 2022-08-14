@@ -6,12 +6,13 @@ using Oversee.Models;
 
 namespace Oversee.Controllers
 {
-    public class UserController : Controller
+    // Only Admins can access
+    public class AdminController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
 
-        public UserController(
+        public AdminController(
             UserManager<AppUser> userManager,
             IMapper mapper
             )
@@ -21,14 +22,14 @@ namespace Oversee.Controllers
         }
 
 
-        // GET: UserController
+        // GET: AdminController
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        // GET: UserController/Details/5
+        // GET: AdminController/Details/5
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -36,14 +37,14 @@ namespace Oversee.Controllers
         }
 
         // Creating AppUsers handled by UserManager in AccountController
-        //// GET: UserController/Create
+        //// GET: AdminController/Create
         //[HttpGet]
         //public ActionResult Create()
         //{
         //    return View();
         //}
 
-        //// POST: UserController/Create
+        //// POST: AdminController/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public ActionResult Create(IFormCollection collection)
@@ -58,15 +59,14 @@ namespace Oversee.Controllers
         //    }
         //}
 
-        // GET: UserController/Edit/5
-
+        // GET: AdminController/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             return View();
         }
 
-        // POST: UserController/Edit/5
+        // POST: AdminController/Edit/5
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, IFormCollection collection)
@@ -81,13 +81,13 @@ namespace Oversee.Controllers
             }
         }
 
-        // GET: UserController/Delete/5
+        // GET: AdminController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             return View();
         }
 
-        // POST: UserController/Delete/5
+        // POST: AdminController/Delete/5
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, IFormCollection collection)

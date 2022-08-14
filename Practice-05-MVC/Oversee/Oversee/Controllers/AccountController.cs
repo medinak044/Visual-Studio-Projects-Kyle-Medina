@@ -24,31 +24,51 @@ public class AccountController : Controller
         _mapper = mapper;
     }
 
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> Login()
     {
-        return View();
+        var model = new LoginVM();
+        return View(model);
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> Login()
-    //{
-    //    // Create new login view model to display
-    //    return View();
-    //}
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginVM loginVM)
+    {
+        if (!ModelState.IsValid)
+            return View(loginVM);
 
-    //[HttpPost]
-    //public async Task<IActionResult> Login()
-    //{
-    //    if (!ModelState.IsValid)
-    //        return View(loginViewModel);
+        // Check if user exists
+        var existingUser = await _userManager.FindByEmailAsync(loginVM.Email);
+        if (existingUser == null)
+        {
+            TempData["Error"] = "Email doesn't exist";
+            return View(loginVM);
+        }
 
-    //}
+        // Verify password
+        var passwordIsCorrect = await _userManager.CheckPasswordAsync(existingUser, loginVM.Password);
+        if (!passwordIsCorrect)
+        {
+            TempData["Error"] = "Invalid credentials";
+            return View(loginVM);
+        }
+
+        // Log user in
+        var signInResult = await _signInManager.PasswordSignInAsync(existingUser, loginVM.Password, false, false);
+        if (!signInResult.Succeeded)
+        {
+            TempData["Error"] = "Invalid credentials";
+            return View(loginVM);
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
 
     [HttpGet]
     public async Task<IActionResult> Register()
     {
-        var response = new RegisterVM();
-        return View(response);
+        var model = new RegisterVM();
+        return View(model);
     }
 
     [HttpPost]
@@ -76,7 +96,7 @@ public class AccountController : Controller
         }
 
         // Assign default role to new user (Make sure roles exist in database first)
-        await _userManager.AddToRoleAsync(newUser, AccountRoles.AppUser);
+        await _userManager.AddToRoleAsync(newUser, AccountRoles_SD.AppUser);
 
         //// Log user in as a convenience
         //var user = await _userManager.FindByEmailAsync(registerVM.Email); // Track new user from db
@@ -90,4 +110,10 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
 }
