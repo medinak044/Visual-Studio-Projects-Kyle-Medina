@@ -44,6 +44,7 @@ app.UseRouting();
 
 SeedDatabase();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

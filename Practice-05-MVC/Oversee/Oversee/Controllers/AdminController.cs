@@ -1,23 +1,29 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Oversee.Data;
 using Oversee.Models;
 
 namespace Oversee.Controllers
 {
-    // Only Admins can access
+    [Authorize(Roles = AccountRoles_SD.Admin)]
     public class AdminController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public AdminController(
             UserManager<AppUser> userManager,
+            IHttpContextAccessor httpContextAccessor,
             IMapper mapper
             )
         {
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
@@ -26,7 +32,14 @@ namespace Oversee.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View();
+            var currentUser_Memory = _httpContextAccessor.HttpContext?.User; // Get current user
+            var users = _userManager.Users.Where(u => u.Id != currentUser_Memory.ToString()); // Exclude current user
+            //var users = await _userManager.Users.ToListAsync(); // Exclude current user
+            var currentUser = await _userManager.FindByIdAsync(currentUser_Memory.ToString());
+            var result = new List<AppUser>();
+            result.Add(currentUser); // Add current user first
+            result.AddRange(users); // Add the rest of the users
+            return View(result);
         }
 
         // GET: AdminController/Details/5

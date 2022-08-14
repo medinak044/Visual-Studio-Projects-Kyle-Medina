@@ -7,6 +7,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
 
+
     public UnitOfWork(
         AppDbContext context
         )
@@ -16,7 +17,12 @@ public class UnitOfWork : IUnitOfWork
 
     #region Repository instances
     // AppUser respository already handled by UserManager (because IdentityUser was inherited)
-    //public IItemRepository Items => new ItemRepository(_context);
+    public IItemRepository Items => new ItemRepository(_context);
+    public IItemRecordRepository ItemRecords => new ItemRecordRepository(_context);
+    public IItemRecordUserRepository ItemRecordUsers =>  new ItemRecordUserRepository(_context);
+    public IItemRequestRepository ItemRequests =>  new ItemRequestRepository(_context);
+    public IUserConnectionRequestRepository UserConnectionRequests =>  new UserConnectionRequestRepository(_context);
+
     #endregion
 
     public async Task<bool> SaveAsync()

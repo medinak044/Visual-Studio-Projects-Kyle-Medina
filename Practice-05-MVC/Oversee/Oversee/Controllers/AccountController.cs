@@ -98,14 +98,14 @@ public class AccountController : Controller
         // Assign default role to new user (Make sure roles exist in database first)
         await _userManager.AddToRoleAsync(newUser, AccountRoles_SD.AppUser);
 
-        //// Log user in as a convenience
-        //var user = await _userManager.FindByEmailAsync(registerVM.Email); // Track new user from db
-        //var isSignedIn = await _signInManager.PasswordSignInAsync(user, registerVM.Password, false, false);
-        //if (!isSignedIn.Succeeded)
-        //{
-        //    TempData["Error"] = "Something went wrong while logging in. Please try again";
-        //    return RedirectToAction("Login");
-        //}
+        // Log user in as a convenience
+        var user = await _userManager.FindByEmailAsync(registerVM.Email); // Track new user from db
+        var isSignedIn = await _signInManager.PasswordSignInAsync(user, registerVM.Password, false, false);
+        if (!isSignedIn.Succeeded)
+        {
+            TempData["Error"] = "Something went wrong while logging in. Please try again";
+            return RedirectToAction("Login");
+        }
 
         return RedirectToAction("Index", "Home");
     }
