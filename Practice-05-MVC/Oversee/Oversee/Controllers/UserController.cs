@@ -1,105 +1,124 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Oversee.Data;
 using Oversee.Models;
+using Oversee.ViewModels;
 
 namespace Oversee.Controllers
 {
+    //[Authorize(Roles = AccountRoles_SD.AppUser)] // Make sure to be able to perform CRUD on user roles
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public UserController(
             UserManager<AppUser> userManager,
+            IHttpContextAccessor httpContextAccessor,
             IMapper mapper
             )
         {
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
 
-        // GET: UserController
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ViewUsers()
         {
+            // Get all users and display list of users (excluding current user)
+
             return View();
         }
 
-        // GET: UserController/Details/5
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Profile(string id)
         {
-            return View();
+            var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId(); // Get current user's id (cookie)
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+
+            if (id == currentUserId)
+            {
+
+            }
+            var model = _mapper.Map<AppUser_AdminVM>(currentUser);
+            model.Roles = await _userManager.GetRolesAsync(currentUser); // Add role data
+
+            return View(model);
         }
 
-        // Creating AppUsers handled by UserManager in AccountController
-        //// GET: UserController/Create
-        //[HttpGet]
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: UserController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        // GET: UserController/Edit/5
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> ProfileEdit(string id)
         {
-            return View();
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
+            }
+
+            var model = _mapper.Map<ProfileEditVM>(user); // Map user values to an edit form
+
+            return View(model);
         }
 
-        // POST: UserController/Edit/5
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, IFormCollection collection)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProfileEdit(ProfileEditVM form)
         {
-            try
+            if (!ModelState.IsValid)
+                return View(form);
+
+            var user = await _userManager.FindByIdAsync(form.Id);
+            if (user == null)
             {
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "User not found";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
-            catch
+
+            user = _mapper.Map<ProfileEditVM, AppUser>(form, user);
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
             {
-                return View();
+                TempData["Error"] = "Server error";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
+
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
         }
 
-        // GET: UserController/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UserController/Delete/5
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProfileEdit_Admin(ProfileEdit_AdminVM form)
         {
-            try
+            if (!ModelState.IsValid)
+                return View(form);
+
+            var user = await _userManager.FindByIdAsync(form.Id);
+            if (user == null)
             {
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "User not found";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
-            catch
+
+            user = _mapper.Map<ProfileEdit_AdminVM, AppUser>(form, user);
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
             {
-                return View();
+                TempData["Error"] = "Server error";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
+
+
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
         }
     }
 }

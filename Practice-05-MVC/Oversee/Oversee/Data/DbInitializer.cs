@@ -55,6 +55,7 @@ public class DbInitializer : IDbInitializer
             await _userManager.CreateAsync(createdAdminUser, "Password!23");
 
             AppUser adminUser = await _userManager.FindByEmailAsync(createdAdminUser.Email);
+            await _userManager.AddToRoleAsync(adminUser, AccountRoles_SD.AppUser);
             await _userManager.AddToRoleAsync(adminUser, AccountRoles_SD.Admin);
         }
 

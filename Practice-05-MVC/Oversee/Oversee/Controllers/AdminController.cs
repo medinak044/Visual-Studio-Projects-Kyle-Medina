@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Oversee.Data;
 using Oversee.Models;
+using Oversee.ViewModels;
 
 namespace Oversee.Controllers
 {
@@ -13,106 +14,66 @@ namespace Oversee.Controllers
     public class AdminController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public AdminController(
             UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IHttpContextAccessor httpContextAccessor,
             IMapper mapper
             )
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
 
-        // GET: AdminController
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var currentUser_Memory = _httpContextAccessor.HttpContext?.User; // Get current user
-            var users = _userManager.Users.Where(u => u.Id != currentUser_Memory.ToString()); // Exclude current user
-            //var users = await _userManager.Users.ToListAsync(); // Exclude current user
-            var currentUser = await _userManager.FindByIdAsync(currentUser_Memory.ToString());
-            var result = new List<AppUser>();
-            result.Add(currentUser); // Add current user first
-            result.AddRange(users); // Add the rest of the users
-            return View(result);
+            var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId(); // Get current user's id (cookie)
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var users = new List<AppUser>();
+            users.Add(currentUser); // Add current user first
+            users.AddRange(_userManager.Users.Where(u => u.Id != currentUserId)); // Add the rest of the users
+
+            var model = new List<AppUser_AdminVM>();
+
+            // Map respective roles for each user
+            foreach (var user in users)
+            {
+                var vm = _mapper.Map<AppUser_AdminVM>(user);
+                vm.Roles = await _userManager.GetRolesAsync(user); // Add role data
+                model.Add(vm);
+            }
+
+            return View(model);
         }
 
-        // GET: AdminController/Details/5
+
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
         {
-            return View();
-        }
-
-        // Creating AppUsers handled by UserManager in AccountController
-        //// GET: AdminController/Create
-        //[HttpGet]
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: AdminController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        // GET: AdminController/Edit/5
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Edit/5
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, IFormCollection collection)
-        {
-            try
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
             {
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "User not found";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: AdminController/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            return View();
-        }
+            var deleteResult = await _userManager.DeleteAsync(user);
+            if (!deleteResult.Succeeded)
+            {
+                TempData["Error"] = "Server error";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
+            }
 
-        // POST: AdminController/Delete/5
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
         }
     }
 }

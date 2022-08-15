@@ -1,0 +1,59 @@
+﻿@using Oversee.Data
+@using Oversee.ViewModels
+
+@{
+    ViewData["Title"] = "ProfileEdit";
+}
+@model ProfileEditVM
+
+<div class="container container-register col-lg-4 col-md-6 col-sm-6" style="margin-top: 5rem; margin-bottom: 0.5rem;">
+    <div class="justify-content-center">
+        <div class="card card-lg text-center">
+            <div class="card-body" style="padding: 2.25rem;">
+                <div>
+                    <h2 class="text-center" style="margin-bottom: 2.25rem;">Edit Information</h2>
+                    <form method="post" asp-action="ProfileEdit">
+                        <div hidden class="form-group mb-4">
+                            <label asp-for="Id">Id</label>
+                            <input class="form-control input-group" asp-for="Id" placeholder="Id">
+                            <span asp-validation-for="Id"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="FirstName">First name</label>
+                            <input class="form-control input-group" asp-for="FirstName" placeholder="First name">
+                            <span asp-validation-for="FirstName"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="LastName">Last name</label>
+                            <input class="form-control input-group" asp-for="LastName" placeholder="Last name">
+                            <span asp-validation-for="LastName"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="UserName">User name</label>
+                            <input class="form-control input-group" asp-for="UserName" placeholder="User Name">
+                            <span asp-validation-for="UserName"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="Email">Email</label>
+                            <input class="form-control input-group" asp-for="Email" placeholder="Email">
+                            <span asp-validation-for="Email"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-success btn-block" type="submit" style="display: block; width: 100%;">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@if (User.IsInRole(AccountRoles_SD.Admin))
+{
+    @*add role form input (see Teddy's form input dropdown')*@
+}

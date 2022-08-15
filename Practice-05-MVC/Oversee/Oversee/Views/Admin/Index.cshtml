@@ -1,9 +1,70 @@
-﻿
-@model List<AppUser>
+﻿@using Oversee.Data
+@using Oversee.ViewModels
+
 @{
     ViewData["Title"] = "Index";
 }
+@model List<AppUser_AdminVM>
+@{
+    var currentUserId = User.GetUserId();
+}
 
-<h1>Admin Index</h1>
 
-<p>(Table)</p>
+<div style="height: 43rem; overflow: auto;">
+    <div class="text-center">
+        <h1>Users (@Model.Count)</h1>
+    </div>
+    <br>
+    <table class="table table-striped container">
+        <thead>
+            <tr>
+                <th></th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>
+                        @if (user.Id == currentUserId)
+                        {
+                            <i class="bi bi-star-fill"></i>
+                        }
+                    </td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @foreach (var role in user.Roles)
+                        {
+                            <p>@role</p>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info me-2" onclick="location.href='@Url.Action("Profile","User", new { id = user.Id})'">
+                            <i class="bi bi-search me-2"></i>Details
+                        </button>
+                        <button class="btn btn-sm btn-warning me-2" onclick="location.href='@Url.Action("ProfileEdit","User", new { id = user.Id})'">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </button>
+                        @if (user.Id != currentUserId)
+                        {
+                        <button class="btn btn-sm btn-danger me-2" onclick="location.href='@Url.Action("Delete","Admin", new { id = user.Id})'">
+                            <i class="bi bi-trash-fill me-2"></i>Delete
+                        </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
