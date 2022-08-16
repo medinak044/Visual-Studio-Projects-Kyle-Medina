@@ -62,14 +62,14 @@ namespace Oversee.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                TempData["Error"] = "User not found";
+                TempData["error"] = "User not found";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 
             var deleteResult = await _userManager.DeleteAsync(user);
             if (!deleteResult.Succeeded)
             {
-                TempData["Error"] = "Server error";
+                TempData["error"] = "Server error";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 

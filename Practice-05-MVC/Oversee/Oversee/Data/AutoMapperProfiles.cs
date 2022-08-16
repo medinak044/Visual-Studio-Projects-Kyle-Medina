@@ -9,6 +9,7 @@ public class AutoMapperProfiles: Profile
     public AutoMapperProfiles()
     {
         CreateMap<RegisterVM, AppUser>(); // When registering new user
+        CreateMap<AppUser, AppUserVM>(); // When displaying user details
         CreateMap<AppUser, AppUser_AdminVM>(); // When displaying table of users in admin view
 
         CreateMap<AppUser, ProfileEditVM>(); // Edit user form

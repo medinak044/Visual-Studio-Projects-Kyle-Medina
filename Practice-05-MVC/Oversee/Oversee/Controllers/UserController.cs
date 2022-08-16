@@ -39,15 +39,16 @@ namespace Oversee.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile(string id)
         {
-            var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId(); // Get current user's id (cookie)
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
-
-            if (id == currentUserId)
+            //var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId(); // Get current user's id (cookie)
+            var profileUser = await _userManager.FindByIdAsync(id);
+            if (profileUser == null)
             {
-
+                TempData["error"] = "User not found";
+                return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
-            var model = _mapper.Map<AppUser_AdminVM>(currentUser);
-            model.Roles = await _userManager.GetRolesAsync(currentUser); // Add role data
+
+            var model = _mapper.Map<AppUserVM>(profileUser);
+            //model.Roles = await _userManager.GetRolesAsync(currentUser); // Add role data
 
             return View(model);
         }
@@ -59,7 +60,7 @@ namespace Oversee.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                TempData["Error"] = "User not found";
+                TempData["error"] = "User not found";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 
@@ -78,7 +79,7 @@ namespace Oversee.Controllers
             var user = await _userManager.FindByIdAsync(form.Id);
             if (user == null)
             {
-                TempData["Error"] = "User not found";
+                TempData["error"] = "User not found";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 
@@ -87,7 +88,7 @@ namespace Oversee.Controllers
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
-                TempData["Error"] = "Server error";
+                TempData["error"] = "Server error";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 
@@ -96,6 +97,7 @@ namespace Oversee.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = AccountRoles_SD.Admin)]
         public async Task<IActionResult> ProfileEdit_Admin(ProfileEdit_AdminVM form)
         {
             if (!ModelState.IsValid)
@@ -104,7 +106,7 @@ namespace Oversee.Controllers
             var user = await _userManager.FindByIdAsync(form.Id);
             if (user == null)
             {
-                TempData["Error"] = "User not found";
+                TempData["error"] = "User not found";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 
@@ -113,7 +115,7 @@ namespace Oversee.Controllers
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
-                TempData["Error"] = "Server error";
+                TempData["error"] = "Server error";
                 return RedirectToAction("Index", "Home"); // (change to Previous url)
             }
 

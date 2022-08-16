@@ -41,7 +41,7 @@ public class AccountController : Controller
         var existingUser = await _userManager.FindByEmailAsync(loginVM.Email);
         if (existingUser == null)
         {
-            TempData["Error"] = "Email doesn't exist";
+            TempData["error"] = "Email doesn't exist";
             return View(loginVM);
         }
 
@@ -49,7 +49,7 @@ public class AccountController : Controller
         var passwordIsCorrect = await _userManager.CheckPasswordAsync(existingUser, loginVM.Password);
         if (!passwordIsCorrect)
         {
-            TempData["Error"] = "Invalid credentials";
+            TempData["error"] = "Invalid credentials";
             return View(loginVM);
         }
 
@@ -57,7 +57,7 @@ public class AccountController : Controller
         var signInResult = await _signInManager.PasswordSignInAsync(existingUser, loginVM.Password, false, false);
         if (!signInResult.Succeeded)
         {
-            TempData["Error"] = "Invalid credentials";
+            TempData["error"] = "Invalid credentials";
             return View(loginVM);
         }
 
@@ -81,7 +81,7 @@ public class AccountController : Controller
         var existingUser = await _userManager.FindByEmailAsync(registerVM.Email);
         if (existingUser != null)
         {
-            TempData["Error"] = "This email is already in use";
+            TempData["error"] = "This email is already in use";
             return View(registerVM);
         }
 
@@ -91,7 +91,7 @@ public class AccountController : Controller
         var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
         if (!newUserResponse.Succeeded)
         {
-            TempData["Error"] = "Server error";
+            TempData["error"] = "Server error";
             return View(registerVM);
         }
 
@@ -103,7 +103,7 @@ public class AccountController : Controller
         var isSignedIn = await _signInManager.PasswordSignInAsync(user, registerVM.Password, false, false);
         if (!isSignedIn.Succeeded)
         {
-            TempData["Error"] = "Something went wrong while logging in. Please try again";
+            TempData["error"] = "Something went wrong while logging in. Please try again";
             return RedirectToAction("Login");
         }
 
