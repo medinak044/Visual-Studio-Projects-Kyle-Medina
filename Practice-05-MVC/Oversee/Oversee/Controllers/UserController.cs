@@ -107,10 +107,30 @@ public class UserController : Controller
             connnectedUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
         }
         uniqueUserIds.Clear();
+
         // pending
+        foreach (var request in pendingUserRequests)
+        {
+            uniqueUserIds.Add(request.ReceiverId);
+        }
+
+        foreach (var userId in uniqueUserIds)
+        {
+            pendingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        }
+        uniqueUserIds.Clear();
 
         // awaiting
+        foreach (var request in awaitingUserRequests)
+        {
+            uniqueUserIds.Add(request.ReceiverId);
+        }
 
+        foreach (var userId in uniqueUserIds)
+        {
+            awaitingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        }
+        uniqueUserIds.Clear();
         #endregion
 
         return View(new ViewUsersVM
