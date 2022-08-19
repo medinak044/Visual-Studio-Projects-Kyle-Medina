@@ -3,6 +3,30 @@
 
 @{
     ViewData["Title"] = "ViewUsers";
+
+    bool IsCurrentUser(string userId)
+    {
+        return (userId == Model.CurrentUserId ? true : false);
+    }
+
+    bool IsConnected(string userId)
+    {
+        foreach (var user in Model.ConnectedUsers)
+        { if (user.Id == userId) { return true; } }
+        return false;
+    }
+    bool IsPending(string userId)
+    {
+        foreach (var user in Model.PendingUsers)
+        { if (user.Id == userId) { return true; } }
+        return false;
+    }
+    bool IsAwaiting(string userId)
+    {
+        foreach (var user in Model.AwaitingUsers)
+        { if (user.Id == userId) { return true; } }
+        return false;
+    }
 }
 @model ViewUsersVM
 
@@ -13,15 +37,15 @@
     top: 50%;
     left: 50%;" *ngIf="!appUsers">
     <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <span class="visually-hidden">Loading...</span>
     </div>
-</div>
+    </div>
 *@
 
 <div class="container mt-5 fade-in">
     <div class="card card-sm">
         <div class="card-header d-flex bg-primary justify-content-between align-items-center"
-            style="color: rgb(215, 215, 215);">
+             style="color: rgb(215, 215, 215);">
             <div>
                 <h6><b>Find users</b> </h6>
             </div>
@@ -29,7 +53,7 @@
                 <div class="mr-2 text-small text-nowrap" style="margin-right: 0.25rem;">Filter by state</div>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                            aria-expanded="false">
                         All States
                     </button>
                     <ul class="dropdown-menu">
@@ -45,28 +69,50 @@
     <div style="height: 43rem; overflow: auto;">
         @foreach (var user in Model.Users)
         {
-        <div class="card">
-            <div class="row">
-                <div class="col-md-2">
-                    <img class="img-fluid" style="width:100%;
+            @if (!IsCurrentUser(user.Id))
+            {
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img class="img-fluid" style="width:100%;
     max-width:170px;" src="@ImageLinks.profile" alt="image">
-                </div>
-                <div class="col-md-6">
-                    <h4 class="mt-2">@user.UserName</h4>
-                    <h6>@user.FirstName @user.LastName</h6>
-                    <h6>@user.Email</h6>
-                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mt-2">@user.UserName</h4>
+                            <h6>@user.FirstName @user.LastName</h6>
+                            <h6>@user.Email</h6>
+                        </div>
 
-                <div class="col-md-4">
-                    <div class="mt-5">
-                        <span class="badge text-bg-success" *ngIf="(html_IsAlreadyAdded(user.id))">Added</span>
-                        <div *ngIf="!(html_IsAlreadyAdded(user.id))">
-                            <button class="btn btn-primary" (click)="addUser(user.id)">Add</button>
+                        <div class="col-md-4">
+                            <div class="mt-5">
+                                @if (IsConnected(user.Id))
+                                {
+                                    <span class="badge bg-success text-bg-success">_</span>
+                                }
+                                else if (true)
+                                {
+                                    <span class="badge bg-secondary text-bg-secondary">Request sent</span>
+                                }
+                                else if (IsAwaiting(user.Id))
+                                {
+                                    <div>
+                                        <button class="btn btn-success">Accept</button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-danger">Decline</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <button class="btn btn-primary">Add</button>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            }
         }
     </div>
 

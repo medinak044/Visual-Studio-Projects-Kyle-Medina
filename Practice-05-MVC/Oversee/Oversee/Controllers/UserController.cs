@@ -37,108 +37,110 @@ public class UserController : Controller
     public async Task<IActionResult> ViewUsers()
     {
         var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId();
-        // Get list of users, excluding current user
-        var users = _mapper.Map<List<AppUserVM>>(_userManager.Users.Where(u => u.Id != currentUserId).ToList());
 
-        #region Sort user connection requests
-        var userConnectionRequests_Sent = _unitOfWork.UserConnectionRequests.GetSome(u => u.SenderId == currentUserId);
-        var userConnectionRequests_Received = _unitOfWork.UserConnectionRequests.GetSome(u => u.ReceiverId == currentUserId);
+        var users = _mapper.Map<List<AppUserVM>>(await _userManager.Users.ToListAsync()); // Exclude current user from list in View file
+        //var users = _mapper.Map<List<AppUserVM>>(_userManager.Users.Where(u => u.Id != currentUserId).ToList()); // Get list of users, excluding current user
 
-        var connectedUserRequests = new List<UserConnectionRequest>();
-        var pendingUserRequests = new List<UserConnectionRequest>();
-        var awaitingUserRequests = new List<UserConnectionRequest>();
+        //#region Sort user connection requests
+        //var userConnectionRequests_Sent = _unitOfWork.UserConnectionRequests.GetSome(u => u.SenderId == currentUserId);
+        //var userConnectionRequests_Received = _unitOfWork.UserConnectionRequests.GetSome(u => u.ReceiverId == currentUserId);
 
-        var connectedUserRequestIds = new HashSet<int>();
+        //var connectedUserRequests = new List<UserConnectionRequest>();
+        //var pendingUserRequests = new List<UserConnectionRequest>();
+        //var awaitingUserRequests = new List<UserConnectionRequest>();
 
-        // Find matching sent/received requests
-        foreach (var sentRequest in userConnectionRequests_Sent)
-        {
-            foreach (var receivedRequest in userConnectionRequests_Received)
-            {
-                if (receivedRequest.ReceiverId == sentRequest.SenderId) // If connection requests were sent to each other
-                {
-                    connectedUserRequests.Add(receivedRequest);
-                    connectedUserRequests.Add(sentRequest);
-                    
-                    connectedUserRequestIds.Add(receivedRequest.Id);
-                    connectedUserRequestIds.Add(sentRequest.Id);
-                    break; // Connection requests matched, continue to next received request
-                }
-            }
-        }
+        //var connectedUserRequestIds = new HashSet<int>();
 
-        // Sort the remaining unmatched sent requests
-        foreach (var sentRequest in userConnectionRequests_Sent)
-        {
-            if (!connectedUserRequestIds.Contains(sentRequest.Id))
-            { pendingUserRequests.Add(sentRequest); }
-        }
+        //// Find matching sent/received requests
+        //foreach (var sentRequest in userConnectionRequests_Sent)
+        //{
+        //    foreach (var receivedRequest in userConnectionRequests_Received)
+        //    {
+        //        if (receivedRequest.ReceiverId == sentRequest.SenderId) // If connection requests were sent to each other
+        //        {
+        //            connectedUserRequests.Add(receivedRequest);
+        //            connectedUserRequests.Add(sentRequest);
 
-        // Sort the remaining unmatched received requests
-        foreach (var receivedRequest in userConnectionRequests_Received)
-        {
-            if (!connectedUserRequestIds.Contains(receivedRequest.Id))
-            { awaitingUserRequests.Add(receivedRequest); }
-        }
-        #endregion
+        //            connectedUserRequestIds.Add(receivedRequest.Id);
+        //            connectedUserRequestIds.Add(sentRequest.Id);
+        //            break; // Connection requests matched, continue to next received request
+        //        }
+        //    }
+        //}
 
-        #region Extract and map user data from user connection requests
-        var connnectedUsers = new List<AppUserVM>();
-        var pendingUsers = new List<AppUserVM>();
-        var awaitingUsers = new List<AppUserVM>();
+        //// Sort the remaining unmatched sent requests
+        //foreach (var sentRequest in userConnectionRequests_Sent)
+        //{
+        //    if (!connectedUserRequestIds.Contains(sentRequest.Id))
+        //    { pendingUserRequests.Add(sentRequest); }
+        //}
 
-        // connectedUsers: Create a filtered List of all unique user ids (who aren't the current user)
-        var uniqueUserIds = new List<string>();
-        foreach (var request in connectedUserRequests)
-        {
+        //// Sort the remaining unmatched received requests
+        //foreach (var receivedRequest in userConnectionRequests_Received)
+        //{
+        //    if (!connectedUserRequestIds.Contains(receivedRequest.Id))
+        //    { awaitingUserRequests.Add(receivedRequest); }
+        //}
+        //#endregion
 
-            if (request.SenderId == currentUserId && !uniqueUserIds.Contains(request.ReceiverId)) // If sent request
-            {
-                uniqueUserIds.Add(request.ReceiverId);
-            }
-            else if (request.ReceiverId == currentUserId && !uniqueUserIds.Contains(request.SenderId)) // If received request
-            {
-                uniqueUserIds.Add(request.SenderId);
-            }
-        }
+        //#region Extract and map user data from user connection requests
+        //var connnectedUsers = new List<AppUserVM>();
+        //var pendingUsers = new List<AppUserVM>();
+        //var awaitingUsers = new List<AppUserVM>();
 
-        foreach (var userId in uniqueUserIds)
-        {
-            connnectedUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
-        }
-        uniqueUserIds.Clear();
+        //// connectedUsers: Create a filtered List of all unique user ids (who aren't the current user)
+        //var uniqueUserIds = new List<string>();
+        //foreach (var request in connectedUserRequests)
+        //{
 
-        // pending
-        foreach (var request in pendingUserRequests)
-        {
-            uniqueUserIds.Add(request.ReceiverId);
-        }
+        //    if (request.SenderId == currentUserId && !uniqueUserIds.Contains(request.ReceiverId)) // If sent request
+        //    {
+        //        uniqueUserIds.Add(request.ReceiverId);
+        //    }
+        //    else if (request.ReceiverId == currentUserId && !uniqueUserIds.Contains(request.SenderId)) // If received request
+        //    {
+        //        uniqueUserIds.Add(request.SenderId);
+        //    }
+        //}
 
-        foreach (var userId in uniqueUserIds)
-        {
-            pendingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
-        }
-        uniqueUserIds.Clear();
+        //foreach (var userId in uniqueUserIds)
+        //{
+        //    connnectedUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        //}
+        //uniqueUserIds.Clear();
 
-        // awaiting
-        foreach (var request in awaitingUserRequests)
-        {
-            uniqueUserIds.Add(request.ReceiverId);
-        }
+        //// pending
+        //foreach (var request in pendingUserRequests)
+        //{
+        //    uniqueUserIds.Add(request.ReceiverId);
+        //}
 
-        foreach (var userId in uniqueUserIds)
-        {
-            awaitingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
-        }
-        uniqueUserIds.Clear();
-        #endregion
+        //foreach (var userId in uniqueUserIds)
+        //{
+        //    pendingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        //}
+        //uniqueUserIds.Clear();
+
+        //// awaiting
+        //foreach (var request in awaitingUserRequests)
+        //{
+        //    uniqueUserIds.Add(request.ReceiverId);
+        //}
+
+        //foreach (var userId in uniqueUserIds)
+        //{
+        //    awaitingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        //}
+        //uniqueUserIds.Clear();
+        //#endregion
 
         return View(new ViewUsersVM
         {
+            CurrentUserId = currentUserId,
             Users = users,
-            ConnectedUsers = connnectedUsers,
-            PendingUsers = pendingUsers,
-            AwaitingUsers = awaitingUsers
+            //ConnectedUsers = connnectedUsers,
+            //PendingUsers = pendingUsers,
+            //AwaitingUsers = awaitingUsers
         });
     }
 
