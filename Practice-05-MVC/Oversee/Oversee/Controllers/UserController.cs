@@ -48,10 +48,9 @@ public class UserController : Controller
         var pendingUserRequests = new List<UserConnectionRequest>();
         var awaitingUserRequests = new List<UserConnectionRequest>();
 
-        var receivedRequestsSet = new HashSet<UserConnectionRequest>();
         var connectedUserRequestIds = new HashSet<int>();
 
-
+        // Find matching sent/received requests
         foreach (var sentRequest in userConnectionRequests_Sent)
         {
             foreach (var receivedRequest in userConnectionRequests_Received)
@@ -61,24 +60,25 @@ public class UserController : Controller
                     connectedUserRequests.Add(receivedRequest);
                     connectedUserRequests.Add(sentRequest);
                     
-                    receivedRequestsSet.Add(receivedRequest); // Add to HashSet for when adding remaining received requests that haven't been matched (or use connectedUserRequests.Contains)
                     connectedUserRequestIds.Add(receivedRequest.Id);
                     connectedUserRequestIds.Add(sentRequest.Id);
                     break; // Connection requests matched, continue to next received request
                 }
             }
+        }
 
-            // If no matching request, add to pending users
-            pendingUserRequests.Add(sentRequest);
+        // Sort the remaining unmatched sent requests
+        foreach (var sentRequest in userConnectionRequests_Sent)
+        {
+            if (!connectedUserRequestIds.Contains(sentRequest.Id))
+            { pendingUserRequests.Add(sentRequest); }
         }
 
         // Sort the remaining unmatched received requests
         foreach (var receivedRequest in userConnectionRequests_Received)
         {
             if (!connectedUserRequestIds.Contains(receivedRequest.Id))
-            {
-                awaitingUserRequests.Add(receivedRequest);
-            }
+            { awaitingUserRequests.Add(receivedRequest); }
         }
         #endregion
 
@@ -88,7 +88,25 @@ public class UserController : Controller
         var awaitingUsers = new List<AppUserVM>();
 
         // connectedUsers: Create a filtered List of all unique user ids (who aren't the current user)
+        var uniqueUserIds = new List<string>();
+        foreach (var request in connectedUserRequests)
+        {
 
+            if (request.SenderId == currentUserId && !uniqueUserIds.Contains(request.ReceiverId)) // If sent request
+            {
+                uniqueUserIds.Add(request.ReceiverId);
+            }
+            else if (request.ReceiverId == currentUserId && !uniqueUserIds.Contains(request.SenderId)) // If received request
+            {
+                uniqueUserIds.Add(request.SenderId);
+            }
+        }
+
+        foreach (var userId in uniqueUserIds)
+        {
+            connnectedUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
+        }
+        uniqueUserIds.Clear();
         // pending
 
         // awaiting
