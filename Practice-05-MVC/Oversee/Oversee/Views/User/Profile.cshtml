@@ -1,7 +1,119 @@
-﻿@using Oversee.ViewModels
+﻿@using Oversee.Data
+@using Oversee.ViewModels
 @{
     ViewData["Title"] = "Profile";
-}
-@model AppUserVM
 
-<h1>Profile view</h1>
+    string profileImg = ImageLinks.profile;
+
+    bool IsCurrentUserProfile()
+    {
+        return (Model.ProfileUser.Id == Model.CurrentUserId ? true : false);
+    }
+
+}
+@model ProfileVM
+
+<div class="mt-5">
+    <div class="container">
+        <div class="row">
+            <!-- Left side start -->
+            <div class="col-12 col-md-4 mb-4 mb-md-0">
+                <!-- Profile card start -->
+                <div class="card mb-4" style="width: 18rem;">
+                    <img src=@profileImg class="card-img-top" alt="profile image">
+                    <div class="card-body text-center">
+                        <h5><b>@Model.ProfileUser.UserName</b></h5>
+                        <h6>@Model.ProfileUser.FirstName @Model.ProfileUser.LastName</h6>
+                        <h6>@Model.ProfileUser.Email</h6>
+                        @if (IsCurrentUserProfile())
+                        {
+                            <a class="btn btn-warning px-3" asp-area="" asp-controller="User" asp-action="ProfileEdit" asp-route-id=@Model.ProfileUser.Id>
+                                <i class="bi bi-pencil-square me-2"></i>Edit</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary px-3" asp-area="" asp-controller="User" asp-action="AddUser">
+                                <i class="bi bi-person-plus-fill me-2"></i>Add user</a>
+                        }
+                    </div>
+                </div>
+                <!-- Profile card end -->
+                <!-- Message list start -->
+                @if (IsCurrentUserProfile())
+                {
+                <div class="card" style="width: 18rem;">
+                    <div class=" card-header d-flex fustify-content-between">
+                        <div>
+                            <h6>Recent Messages</h6>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">ExampleUser: (the most recent message of a message thread)</li>
+                            <li class="list-group-item">ExampleUser2: Second message</li>
+                        </ul>
+                    </div>
+                </div>
+                }
+                <!-- Message list end -->
+            </div>
+            <!-- Left side end -->
+            <!-- Right side start -->
+            <div class="col-12 col-md-8">
+                <div>
+                    @if (IsCurrentUserProfile())
+                    {
+                        <div id="saved-users-list">
+                            <h2>User List:</h2>
+                            <hr>
+                            <div style="height: 35rem; overflow-y: auto;">
+                                <!-- (List of saved users) -->
+                            <div class="card" *ngFor="let user of alreadyAddedUsers">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img style="width:100%; max-width:170px;" src="@profileImg" alt="user image">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h4 class="mt-2">{{user.userName}}</h4>
+                                            <h6>{{user.firstName}} {{user.lastName}}</h6>
+                                            <h6>{{user.email}}</h6>
+                                            <div class="mt-4">
+
+                                                <div class="btn-group" role="group"
+                                                 aria-label="Button group with nested dropdown">
+                                                    <button type="button" class="btn btn-danger"
+                                                        (click)="removeUser(user.userConnectionId, user.id)">
+                                                        Remove
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary">Message</button>
+
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            Invite to:
+                                                        </button>
+                                                    <ul class="dropdown-menu">
+                                                            <li class="dropdown-item"
+                                                            (click)="inviteToEvent(user.id, userEvent.id)"
+                                                            *ngFor="let userEvent of (events$|async)">
+                                                                {{userEvent.title}}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <!-- Right side end -->
+        </div>
+    </div>
+</div>

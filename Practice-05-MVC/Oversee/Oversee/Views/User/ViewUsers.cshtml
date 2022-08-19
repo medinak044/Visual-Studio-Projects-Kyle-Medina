@@ -1,0 +1,92 @@
+﻿@using Oversee.Data
+@using Oversee.ViewModels
+
+@{
+    ViewData["Title"] = "ViewUsers";
+}
+@model ViewUsersVM
+
+<h1>ViewUsers (List of users (@Model.Users.Count))</h1>
+
+@*<div class="d-flex justify-content-center" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;" *ngIf="!appUsers">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+*@
+
+<div class="container mt-5 fade-in">
+    <div class="card card-sm">
+        <div class="card-header d-flex bg-primary justify-content-between align-items-center"
+            style="color: rgb(215, 215, 215);">
+            <div>
+                <h6><b>Find users</b> </h6>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="mr-2 text-small text-nowrap" style="margin-right: 0.25rem;">Filter by state</div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        All States
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">All States</li>
+                        <li class="dropdown-item">Alaska, AK</li>
+                        <li class="dropdown-item">Alabama, AL</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 43rem; overflow: auto;">
+        @foreach (var user in Model.Users)
+        {
+        <div class="card">
+            <div class="row">
+                <div class="col-md-2">
+                    <img class="img-fluid" style="width:100%;
+    max-width:170px;" src="@ImageLinks.profile" alt="image">
+                </div>
+                <div class="col-md-6">
+                    <h4 class="mt-2">@user.UserName</h4>
+                    <h6>@user.FirstName @user.LastName</h6>
+                    <h6>@user.Email</h6>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mt-5">
+                        <span class="badge text-bg-success" *ngIf="(html_IsAlreadyAdded(user.id))">Added</span>
+                        <div *ngIf="!(html_IsAlreadyAdded(user.id))">
+                            <button class="btn btn-primary" (click)="addUser(user.id)">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" routerLink="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" routerLink="#">1</a></li>
+            <li class="page-item"><a class="page-link" routerLink="#">2</a></li>
+            <li class="page-item"><a class="page-link" routerLink="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" routerLink="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
