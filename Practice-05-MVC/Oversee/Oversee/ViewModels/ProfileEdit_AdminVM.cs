@@ -4,5 +4,5 @@ namespace Oversee.ViewModels;
 
 public class ProfileEdit_AdminVM: ProfileEditVM
 {
-    // List of Roles
+    //public IEnumerable<string> Roles { get; set; }
 }

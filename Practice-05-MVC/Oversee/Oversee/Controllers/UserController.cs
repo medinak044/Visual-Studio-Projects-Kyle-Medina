@@ -16,18 +16,21 @@ public class UserController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMapper _mapper;
 
     public UserController(
         IUnitOfWork unitOfWork,
         UserManager<AppUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper
         )
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _roleManager = roleManager;
         _httpContextAccessor = httpContextAccessor;
         _mapper = mapper;
     }
@@ -195,11 +198,11 @@ public class UserController : Controller
         if (!ModelState.IsValid)
             return View(form);
 
-        #region Demo admin cannot make user changes
+        #region DEMO: Demo admin cannot make user changes
         var currentUserEmail = _httpContextAccessor.HttpContext?.User.GetEmail();
         if (currentUserEmail.ToUpper() == "admin@example.com".ToUpper())
         {
-            TempData["error"] = "Demo Admin not allowed to delete user data";
+            TempData["error"] = "Demo Admin not allowed to edit user data";
             return RedirectToAction("Index", "Home"); // (change to Previous url)
         }
         #endregion
@@ -224,6 +227,7 @@ public class UserController : Controller
         return RedirectToAction("Index", "Home"); // (change to Previous url)
     }
 
+    // (Edit Roles only)
     [HttpPost]
     [Authorize(Roles = AccountRoles_SD.Admin)]
     public async Task<IActionResult> ProfileEdit_Admin(ProfileEdit_AdminVM form)
@@ -240,6 +244,19 @@ public class UserController : Controller
 
         user = _mapper.Map<ProfileEdit_AdminVM, AppUser>(form, user);
 
+        //#region Update user roles based on form
+        //var currentRoles = await _userManager.GetRolesAsync(user);
+        //var inputRoles = form
+        //foreach (var item in collection)
+        //{
+
+        //}
+        //if (currentRoles.Contains)
+        //{
+
+        //}
+        //#endregion
+
         var updateResult = await _userManager.UpdateAsync(user);
         if (!updateResult.Succeeded)
         {
@@ -250,4 +267,13 @@ public class UserController : Controller
 
         return RedirectToAction("Index", "Home"); // (change to Previous url)
     }
+
+    [HttpGet]
+    public async Task<IActionResult> SendUserConnectionRequest_ViewUsers(string id)
+    {
+
+
+        return RedirectToAction("ViewUsers", "User");
+    }
 }
+

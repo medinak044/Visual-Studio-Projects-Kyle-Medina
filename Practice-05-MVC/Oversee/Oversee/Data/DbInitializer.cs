@@ -42,8 +42,13 @@ public class DbInitializer : IDbInitializer
             await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.Admin));
             await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.AppUser));
             await _roleManager.CreateAsync(new IdentityRole(AccountRoles_SD.Example));
+        }
 
-            // If roles are not created, create admin user as well
+        string demoPassword = "Password!23";
+
+        // Create demo admin
+        if (await _userManager.FindByEmailAsync("admin@example.com") == null)
+        {
             AppUser createdAdminUser = new AppUser
             {
                 UserName = "Admin_UserName",
@@ -52,13 +57,30 @@ public class DbInitializer : IDbInitializer
                 LastName = "Min",
             };
 
-            await _userManager.CreateAsync(createdAdminUser, "Password!23");
+            await _userManager.CreateAsync(createdAdminUser, demoPassword);
 
             AppUser adminUser = await _userManager.FindByEmailAsync(createdAdminUser.Email);
             await _userManager.AddToRoleAsync(adminUser, AccountRoles_SD.AppUser);
             await _userManager.AddToRoleAsync(adminUser, AccountRoles_SD.Admin);
         }
 
-        return;
+        // Create demo user
+        if (await _userManager.FindByEmailAsync("appuser@example.com") == null)
+        {
+            AppUser createdAdminUser = new AppUser
+            {
+                UserName = "AppUser_UserName",
+                Email = "appuser@example.com",
+                FirstName = "App",
+                LastName = "User",
+            };
+
+            await _userManager.CreateAsync(createdAdminUser, demoPassword);
+
+            AppUser user = await _userManager.FindByEmailAsync(createdAdminUser.Email);
+            await _userManager.AddToRoleAsync(user, AccountRoles_SD.AppUser);
+
+            return;
+        }
     }
 }

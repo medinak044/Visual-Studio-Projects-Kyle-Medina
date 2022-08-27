@@ -89,7 +89,7 @@
                                 {
                                     <span class="badge bg-success text-bg-success">_</span>
                                 }
-                                else if (true)
+                                else if (IsPending(user.Id))
                                 {
                                     <span class="badge bg-secondary text-bg-secondary">Request sent</span>
                                 }
@@ -104,9 +104,9 @@
                                 }
                                 else
                                 {
-                                    <div>
-                                        <button class="btn btn-primary">Add</button>
-                                    </div>
+                                    <a class="btn btn-primary px-3" asp-area="" asp-controller="User" asp-action="SendUserConnectionRequest_ViewUsers" asp-route-id=@user.Id>
+                                        <i class="bi bi-person-plus-fill me-2"></i>Add
+                                    </a>
                                 }
                             </div>
                         </div>

@@ -54,7 +54,6 @@ public class AdminController : Controller
         return View(model);
     }
 
-
     [HttpGet]
     public async Task<IActionResult> Delete(string id)
     {
@@ -83,4 +82,12 @@ public class AdminController : Controller
 
         return RedirectToAction("Index", "Admin");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> AddRole(string id, string role)
+    {
+        return RedirectToAction("Index", "Admin");
+    }
+
+
 }
