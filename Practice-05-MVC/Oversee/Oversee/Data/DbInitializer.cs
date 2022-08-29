@@ -24,7 +24,7 @@ public class DbInitializer : IDbInitializer
         _userManager = userManager;
         _roleManager = roleManager;
     }
-    public async void Initialize()
+    public async Task Initialize()
     {
         // Apply migrations if they are not applied
         try

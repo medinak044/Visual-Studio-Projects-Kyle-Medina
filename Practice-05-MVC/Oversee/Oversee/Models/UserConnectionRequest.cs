@@ -6,5 +6,9 @@ public class UserConnectionRequest
 {
     public int Id { get; set; }
     public string SenderId { get; set; }
+    public AppUser SendingUser { get; set; }
     public string ReceiverId { get; set; }
+    public AppUser ReceivingUser { get; set; }
+    public bool IsConnected { get; set; } = false;
+
 }
