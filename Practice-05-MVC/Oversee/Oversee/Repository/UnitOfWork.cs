@@ -22,6 +22,7 @@ public class UnitOfWork : IUnitOfWork
     public IItemRecordUserRepository ItemRecordUsers =>  new ItemRecordUserRepository(_context);
     public IItemRequestRepository ItemRequests =>  new ItemRequestRepository(_context);
     public IUserConnectionRequestRepository UserConnectionRequests =>  new UserConnectionRequestRepository(_context);
+    public IUserConnectionRequest_UserRepository UserConnectionRequest_Users =>  new UserConnectionRequest_UserRepository(_context);
 
     #endregion
 

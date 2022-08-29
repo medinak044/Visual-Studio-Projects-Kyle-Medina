@@ -34,7 +34,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<T> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<T> GetOneAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.Where(predicate).FirstOrDefaultAsync();
     }
 
     public IEnumerable<T> GetSome(Expression<Func<T, bool>> predicate)

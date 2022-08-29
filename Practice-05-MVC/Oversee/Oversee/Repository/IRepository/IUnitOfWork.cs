@@ -8,4 +8,5 @@ public interface IUnitOfWork
     IItemRecordUserRepository ItemRecordUsers { get; }
     IItemRequestRepository ItemRequests { get; }
     IUserConnectionRequestRepository UserConnectionRequests { get; }
+    IUserConnectionRequest_UserRepository UserConnectionRequest_Users { get; }
 }

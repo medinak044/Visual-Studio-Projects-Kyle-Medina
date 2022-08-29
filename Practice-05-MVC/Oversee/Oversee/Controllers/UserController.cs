@@ -42,11 +42,11 @@ public class UserController : Controller
         var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId();
 
         var users = _mapper.Map<List<AppUserVM>>(await _userManager.Users.ToListAsync()); // Exclude current user from list in View file
-        //var users = _mapper.Map<List<AppUserVM>>(_userManager.Users.Where(u => u.Id != currentUserId).ToList()); // Get list of users, excluding current user
+                                                                                          //var users = _mapper.Map<List<AppUserVM>>(_userManager.Users.Where(u => u.Id != currentUserId).ToList()); // Get list of users, excluding current user
 
-        //#region Sort user connection requests
-        //var userConnectionRequests_Sent = _unitOfWork.UserConnectionRequests.GetSome(u => u.SenderId == currentUserId);
-        //var userConnectionRequests_Received = _unitOfWork.UserConnectionRequests.GetSome(u => u.ReceiverId == currentUserId);
+        #region Sort user connection requests 01
+        //var userConnectionRequests_Sent = _unitOfWork.UserConnectionRequests.GetSome(u => u.SendingUserId == currentUserId);
+        //var userConnectionRequests_Received = _unitOfWork.UserConnectionRequests.GetSome(u => u.ReceivingUserId == currentUserId);
 
         //var connectedUserRequests = new List<UserConnectionRequest>();
         //var pendingUserRequests = new List<UserConnectionRequest>();
@@ -59,7 +59,7 @@ public class UserController : Controller
         //{
         //    foreach (var receivedRequest in userConnectionRequests_Received)
         //    {
-        //        if (receivedRequest.ReceiverId == sentRequest.SenderId) // If connection requests were sent to each other
+        //        if (receivedRequest.ReceivingUserId == sentRequest.SendingUserId) // If connection requests were sent to each other
         //        {
         //            connectedUserRequests.Add(receivedRequest);
         //            connectedUserRequests.Add(sentRequest);
@@ -96,13 +96,13 @@ public class UserController : Controller
         //foreach (var request in connectedUserRequests)
         //{
 
-        //    if (request.SenderId == currentUserId && !uniqueUserIds.Contains(request.ReceiverId)) // If sent request
+        //    if (request.SendingUserId == currentUserId && !uniqueUserIds.Contains(request.ReceivingUserId)) // If sent request
         //    {
-        //        uniqueUserIds.Add(request.ReceiverId);
+        //        uniqueUserIds.Add(request.ReceivingUserId);
         //    }
-        //    else if (request.ReceiverId == currentUserId && !uniqueUserIds.Contains(request.SenderId)) // If received request
+        //    else if (request.ReceivingUserId == currentUserId && !uniqueUserIds.Contains(request.SendingUserId)) // If received request
         //    {
-        //        uniqueUserIds.Add(request.SenderId);
+        //        uniqueUserIds.Add(request.SendingUserId);
         //    }
         //}
 
@@ -115,7 +115,7 @@ public class UserController : Controller
         //// pending
         //foreach (var request in pendingUserRequests)
         //{
-        //    uniqueUserIds.Add(request.ReceiverId);
+        //    uniqueUserIds.Add(request.ReceivingUserId);
         //}
 
         //foreach (var userId in uniqueUserIds)
@@ -127,7 +127,7 @@ public class UserController : Controller
         //// awaiting
         //foreach (var request in awaitingUserRequests)
         //{
-        //    uniqueUserIds.Add(request.ReceiverId);
+        //    uniqueUserIds.Add(request.ReceivingUserId);
         //}
 
         //foreach (var userId in uniqueUserIds)
@@ -135,7 +135,7 @@ public class UserController : Controller
         //    awaitingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(userId)));
         //}
         //uniqueUserIds.Clear();
-        //#endregion
+        #endregion
 
         return View(new ViewUsersVM
         {
@@ -271,7 +271,59 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> SendUserConnectionRequest_ViewUsers(string id)
     {
+        // Check if userId exists in db
+        if (await _userManager.FindByIdAsync(id) == null)
+        {
+            TempData["error"] = "User doesn't exist";
+            return RedirectToAction("ViewUsers", "User"); // (change to Previous url)
+        }
 
+        var currentUserId = _httpContextAccessor.HttpContext?.User.GetUserId(); // Get the current user id
+
+        // Check if a connection request already exists (same sender and receiver id)
+
+        // Create connection request object
+        var userConnectionRequest = new UserConnectionRequest()
+        {
+            Id = 0,
+            SendingUserId = currentUserId,
+            ReceivingUserId = id,
+            IsConnected = false
+        };
+
+        await _unitOfWork.UserConnectionRequests.AddAsync(userConnectionRequest);
+        if (!await _unitOfWork.SaveAsync())
+        {
+            TempData["error"] = "Server error";
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
+        }
+        else
+        {
+            // Retrieve record data from db (containing the newly generated Id)
+            userConnectionRequest = await _unitOfWork.UserConnectionRequests
+                .GetOneAsync(u => u.SendingUserId == currentUserId && u.ReceivingUserId == id);
+        }
+
+        // Make sure the Id has been generated by the database
+        if (userConnectionRequest.Id == 0)
+        {
+            TempData["error"] = "UserConnectionRequest object Id cannot be 0";
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
+        }
+
+        // Create ..._User object using sender's id
+        var userConnectionRequest_User = new UserConnectionRequest_User()
+        {
+            UserId = currentUserId,
+            UserConnectionRequestId = userConnectionRequest.Id
+        };
+
+        await _unitOfWork.UserConnectionRequest_Users.AddAsync(userConnectionRequest_User);
+        if (!await _unitOfWork.SaveAsync())
+        {
+            TempData["error"] = "Server error";
+            return RedirectToAction("Index", "Home"); // (change to Previous url)
+        }
 
         return RedirectToAction("ViewUsers", "User");
     }
