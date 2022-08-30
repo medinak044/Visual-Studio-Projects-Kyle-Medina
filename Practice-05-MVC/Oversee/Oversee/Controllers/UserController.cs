@@ -137,6 +137,64 @@ public class UserController : Controller
         //uniqueUserIds.Clear();
         #endregion
 
+        #region Sort user connection requests 02
+        // Get all UserConnectionRequest objs relevant to current user (current user either being a sender or receiver)
+        var userConnectionRequests = _unitOfWork.UserConnectionRequests
+            .GetSome(u => u.SendingUserId == currentUserId || u.ReceivingUserId == currentUserId);
+
+        // Get all UserConnectionRequest_User objs related to the acquired UserConnectionRequests (foreign key)
+        var userConnectionRequest_Users = new List<UserConnectionRequest_User>();
+        foreach (var ucr in userConnectionRequests)
+        {
+            var ucr_User = await _unitOfWork.UserConnectionRequest_Users
+                .GetOneAsync(u => u.UserConnectionRequestId == ucr.Id);
+
+            if (ucr_User == null) continue;
+
+            userConnectionRequest_Users.Add(ucr_User);
+        }
+
+        var connnectedUsers = new List<AppUserVM>();
+        var pendingUsers = new List<AppUserVM>();
+        var awaitingUsers = new List<AppUserVM>();
+
+        // Connected users (2 matching UserConnectionRequest_User)
+        foreach (var ucr in userConnectionRequests)
+        {
+            // For each UCR, check if both sending user and receiving UCR_User (id) exists
+            var ucr_Users = userConnectionRequest_Users.FindAll(u => u.UserConnectionRequestId == ucr.Id); // Get all related UCR_User objs
+            foreach (var ucr_User in ucr_Users)
+            {
+                // Checking if pending or connected
+                if (ucr.SendingUserId == currentUserId && ucr_User.UserConnectionRequestId == ucr.Id)
+                {
+                    if (ucr_User.UserId == ucr.SendingUserId) continue; // Skip this UCR_User if contains current user's Id
+
+                    // Check if receiving user's id exists in a related UCR_User
+                    var receivingUser = userConnectionRequest_Users.Find(u => u.UserId == ucr.ReceivingUserId);
+                    if (receivingUser == null)
+                    {
+                        // Receiving user has still yet to make a response (pending)
+                        pendingUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(ucr.ReceivingUserId)));
+                    }
+                    // Receiving user is connected with current user
+                    connnectedUsers.Add(_mapper.Map<AppUserVM>(await _userManager.FindByIdAsync(ucr.ReceivingUserId)));
+                }
+
+                // Checking if awaiting or connected
+                if (ucr.ReceivingUserId == currentUserId && ucr_User.UserId == ucr.ReceivingUserId)
+                {
+
+                }
+            }
+
+            // Map AppUser as AppUserVM
+        }
+        // Pending users (Users who received request from current user)
+
+        // Awaiting users (Users who sent request to current user)
+        #endregion
+
         return View(new ViewUsersVM
         {
             CurrentUserId = currentUserId,
